@@ -1,0 +1,4517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Feeder Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+
+            box-sizing: border-box;
+        }
+		h3{
+			text-align: center;
+			border-bottom: 1px solid gray
+		}
+
+        .container {
+    background: 
+        linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+        url("Background 1.jpg");
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 900px;
+    margin-top: 50px;
+}
+		
+
+        .search-input {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        .search-button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .search-button:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .result-card {
+/*            background-color: #f8fafc;*/
+            background-color: #fff5d7;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .result-item {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+
+        .result-item strong {
+            color: #2d3748;
+        }
+
+        .feeder-11kv-button,.feeder-33kv-button,.station-button,.iss-button {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #3b82f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border: 1px solid #fff;
+        }
+		.feeder-11kv-button{
+		 background-color: #FF0000;	
+		 color: #fff;
+		}
+			.feeder-33kv-button{
+		 background-color: #587246;
+		  color: #fff;
+		
+		}
+		.iss-button{
+		 background-color: cornflowerblue;
+		  color: #fff;
+		
+		}
+		.station-button{
+		 background-color: greenyellow;
+		  color: #fff;
+		
+		}
+		
+		
+		.suggestions-dropdown {
+    display: none;
+    z-index: 1000;
+}
+
+.suggestions-dropdown.show {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+.suggestion-item.highlighted {
+    background-color: #e0e0e0;
+}
+
+        .feeder-11kv-button:hover, .iss-button:hover, .feeder-33kv-button:hover,.station-button:hover{
+            background-color: #c7d2fe;
+            color: #1d4ed8;
+        }
+
+        .back-button {
+            background-color: #6b7280;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin-top: 20px;
+            }
+            .search-input, .search-button {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            .result-title {
+                font-size: 1.1rem;
+            }
+            .result-item {
+                font-size: 0.85rem;
+            }
+        }
+		 @media (min-width: 1050px) {
+			 body{
+			padding-left: 20%;
+			padding-right: 20%;
+			 } 
+		}
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="background-color: whitesmoke" class="flex items-center justify-center text-3xl font-bold text-gray-800 mb-8 space-x-4">
+  <img src="PHED logo.png" alt="Logo" class="h-16 w-50">
+  <span style="color:#7f78c9">NETWORK INFORMATION</span>
+</h1>
+
+    <div class="firstCont flex flex-col sm:flex-row gap-4 mb-8 relative">
+        <div class="relative flex-grow">
+            <div class="flex w-full gap-2">
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Enter 33KV or 11KV Feeder Name (e.g., Abuloma, JETTY)"
+        class="search-input flex-grow px-4 py-2 border border-gray-300 rounded-md"
+        autocomplete="off"
+    />
+    <button id="searchButton" class="search-button px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+        Search
+    </button>
+</div>
+            <div id="suggestionsDropdown" class="suggestions-dropdown hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"></div>
+        </div>
+       
+    </div>
+
+ <div id="resultsContainer" style="text-transform: uppercase;">
+<!--    <p class="text-center text-gray-500">Search for feeder data to see results here.</p>-->
+</div>
+</div>
+
+    <script>
+        // Power transmission and distribution data
+        const powerData = [
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "ABULOMA 1X15, 1 X 7.5MVA, 33/11KV",
+		"ISS CUG": "07079459912",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV  ",
+        "Transformer load": 8.6,
+        "ASSOCIATED 11KV FEEDERS": "JETTY",
+        "PEAK LOAD": 4.8,
+        "AVERAGE LOAD.1": 2.3468952641557985,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "ABULOMA 1X15, 1 X 7.5MVA, 33/11KV",
+		"ISS CUG": "07079459912",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV  ",
+        "Transformer load": 8.6,
+        "ASSOCIATED 11KV FEEDERS": "OZUBOKO",
+        "PEAK LOAD": 3.8,
+        "AVERAGE LOAD.1": 2.2972000439217535,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "OKURU INJ. 1X15MVA  ",
+		"ISS CUG": "07074919608",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 1.9,
+        "ASSOCIATED 11KV FEEDERS": "ODILI ROAD",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "OKURU INJ. 1X15MVA  ",
+		"ISS CUG": "07074919608",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 1.9,
+        "ASSOCIATED 11KV FEEDERS": "OKURU",
+        "PEAK LOAD": 1.9,
+        "AVERAGE LOAD.1": 0.8365569478318458,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "OKURU INJ. 1X15MVA  ",
+		"ISS CUG": "07074919608",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 1.9,
+        "ASSOCIATED 11KV FEEDERS": "GULF ESTATE",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "AZUABIE 1 X 15 MVA, 33/11KV",
+		"ISS CUG": "07074919607",
+        "TRANSFORMER LIMITATION": "T1 1X15MVA 33/11KV",
+        "Transformer load": 5.0,
+        "ASSOCIATED 11KV FEEDERS": "AZUABIE",
+        "PEAK LOAD": 2.5,
+        "AVERAGE LOAD.1": 1.4377704622030405,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Abuloma",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 5.736851081651628,
+        "ISS ": "AZUABIE 1 X 15 MVA, 33/11KV",
+		"ISS CUG": "07074919607",
+        "TRANSFORMER LIMITATION": "T1 1X15MVA 33/11KV",
+        "Transformer load": 5.0,
+        "ASSOCIATED 11KV FEEDERS": "GLASS FACTORY",
+        "PEAK LOAD": 2.6,
+        "AVERAGE LOAD.1": 1.5879831039725476,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "AGIP - OKPORO 1X15MVA, 33/11KV",
+		"ISS CUG": "07074919616",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.9,
+        "ASSOCIATED 11KV FEEDERS": "R-D ROAD",
+        "PEAK LOAD": 5.2,
+        "AVERAGE LOAD.1": 2.987052604590989,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "AGIP - OKPORO 1X15MVA, 33/11KV",
+		"ISS CUG": "07074919616",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.9,
+        "ASSOCIATED 11KV FEEDERS": "OKPORO ROAD",
+        "PEAK LOAD": 5.7,
+        "AVERAGE LOAD.1": 3.1790950271522966,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "AGIP - OKPORO 1X15MVA, 33/11KV",
+		"ISS CUG": "07074919616",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.9,
+        "ASSOCIATED 11KV FEEDERS": "OKOH ROAD",
+        "PEAK LOAD": 2.0,
+        "AVERAGE LOAD.1": 0.8673263321405966,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "RUMUODOMAYA 2X15MVA 33/11KV",
+		"ISS CUG": "07074919615",
+        "TRANSFORMER LIMITATION": "T115MVA 33/11KV",
+        "Transformer load": 9.0,
+        "ASSOCIATED 11KV FEEDERS": "FGC",
+        "PEAK LOAD": 5.5,
+        "AVERAGE LOAD.1": 3.3560746815924634,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "RUMUODOMAYA 2X15MVA 33/11KV",
+		"ISS CUG": "07074919615",
+        "TRANSFORMER LIMITATION": "T115MVA 33/11KV",
+        "Transformer load": 9.0,
+        "ASSOCIATED 11KV FEEDERS": "OBI WALI",
+        "PEAK LOAD": 4.0,
+        "AVERAGE LOAD.1": 2.6673008023040286,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+		"ISS CUG": "07074919615",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "RUMUODOMAYA 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 7.1,
+        "ASSOCIATED 11KV FEEDERS": "ELIOGBOLO",
+        "PEAK LOAD": 3.3,
+        "AVERAGE LOAD.1": 1.9999010559594181,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "RUMUODUMAYA",
+        "MAX.  LOAD": 25.2,
+        "AVERAGE LOAD": 14.907397295659129,
+        "ISS ": "RUMUODOMAYA 2X15MVA 33/11KV",
+		"ISS CUG": "07074919615",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 7.1,
+        "ASSOCIATED 11KV FEEDERS": "OMACHI",
+        "PEAK LOAD": 4.0,
+        "AVERAGE LOAD.1": 2.885471972801008,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Refinery Line 1",
+        "MAX.  LOAD": 14.8,
+        "AVERAGE LOAD": 6.479994279567745,
+        "ISS ": "ENEKA TOWN HALL 2X15MVA 33/11KV ",
+		"ISS CUG": "07074919597",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 13.8,
+        "ASSOCIATED 11KV FEEDERS": "IGWURUTA ROAD",
+        "PEAK LOAD": 7.2,
+        "AVERAGE LOAD.1": 4.380315252555434,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Refinery Line 1",
+        "MAX.  LOAD": 14.8,
+        "AVERAGE LOAD": 6.479994279567745,
+        "ISS ": "ENEKA TOWN HALL 2X15MVA 33/11KV ",
+		"ISS CUG": "07074919597",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 13.8,
+        "ASSOCIATED 11KV FEEDERS": "ELIMGBU",
+        "PEAK LOAD": 7.0,
+        "AVERAGE LOAD.1": 4.648441308980863,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 45.1,
+        "NAME OF 33KV FEEDERS": "Refinery Line 1",
+        "MAX.  LOAD": 14.8,
+        "AVERAGE LOAD": 6.479994279567745,
+        "ISS ": "ENEKA TOWN HALL 2X15MVA 33/11KV ",
+		"ISS CUG": "07074919597",
+        "TRANSFORMER LIMITATION": "T1 15MVA =NOT IN USE",
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "TRANS AMADI",
+        "MAX.  LOAD": 20.7,
+        "AVERAGE LOAD": 10.161951998973354,
+        "ISS ": "TRANS AMADI  2 X 15MVA, 33/11KV",
+		"ISS CUG": "07074919592",
+        "TRANSFORMER LIMITATION": "T1 15MVA",
+        "Transformer load": 6.5,
+        "ASSOCIATED 11KV FEEDERS": "NDABROS",
+        "PEAK LOAD": 2.8,
+        "AVERAGE LOAD.1": 1.3006962520813181,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "TRANS AMADI",
+        "MAX.  LOAD": 20.7,
+        "AVERAGE LOAD": 10.161951998973354,
+        "ISS ": "TRANS AMADI  2 X 15MVA, 33/11KV",
+		"ISS CUG": "07074919592",
+        "TRANSFORMER LIMITATION": "T1 15MVA",
+        "Transformer load": 6.5,
+        "ASSOCIATED 11KV FEEDERS": "FIMIE",
+        "PEAK LOAD": 3.4,
+        "AVERAGE LOAD.1": 1.71814426006578,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "TRANS AMADI",
+        "MAX.  LOAD": 20.7,
+        "AVERAGE LOAD": 10.161951998973354,
+        "ISS ": "TRANS AMADI  2 X 15MVA, 33/11KV",
+		"ISS CUG": "07074919592",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 13.0,
+        "ASSOCIATED 11KV FEEDERS": "RIVOC",
+        "PEAK LOAD": 7.4,
+        "AVERAGE LOAD.1": 4.181366668728927,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "TRANS AMADI",
+        "MAX.  LOAD": 20.7,
+        "AVERAGE LOAD": 10.161951998973354,
+        "ISS ": "TRANS AMADI  2 X 15MVA, 33/11KV",
+		"ISS CUG": "07074919592",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 13.0,
+        "ASSOCIATED 11KV FEEDERS": "WATER WORKS",
+        "PEAK LOAD": 5.6,
+        "AVERAGE LOAD.1": 2.4825377368702686,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "Rainbow",
+        "MAX.  LOAD": 16.95,
+        "AVERAGE LOAD": 8.161844392807412,
+        "ISS ": "2X 15MVA RAINBOW            INJ S/S 11",
+		"ISS CUG": "07074919603",
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "Rainbow",
+        "MAX.  LOAD": 16.95,
+        "AVERAGE LOAD": 8.161844392807412,
+        "ISS ": "2X 15MVA RAINBOW            INJ S/S 11",
+		"ISS CUG": "07074919603",
+        "TRANSFORMER LIMITATION": "T1  15MVA 33/11KV",
+        "Transformer load": 6.7,
+        "ASSOCIATED 11KV FEEDERS": "NIGER CAT",
+        "PEAK LOAD": 2.3,
+        "AVERAGE LOAD.1": 1.207140528015091,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "Rainbow",
+        "MAX.  LOAD": 16.95,
+        "AVERAGE LOAD": 8.161844392807412,
+        "ISS ": "2X 15MVA RAINBOW            INJ S/S 11",
+		"ISS CUG": "07074919603",
+        "TRANSFORMER LIMITATION": "T1  15MVA 33/11KV",
+        "Transformer load": 6.7,
+        "ASSOCIATED 11KV FEEDERS": "AMADI AMA",
+        "PEAK LOAD": 2.9,
+        "AVERAGE LOAD.1": 1.8133824751752086,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "Rainbow",
+        "MAX.  LOAD": 16.95,
+        "AVERAGE LOAD": 8.161844392807412,
+        "ISS ": "2X 15MVA RAINBOW            INJ S/S 11",
+		"ISS CUG": "07074919603",
+        "TRANSFORMER LIMITATION": "T1  15MVA 33/11KV",
+        "Transformer load": 6.7,
+        "ASSOCIATED 11KV FEEDERS": "NKPOGU",
+        "PEAK LOAD": 1.7,
+        "AVERAGE LOAD.1": 0.7390524650112944,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "Rainbow",
+        "MAX.  LOAD": 16.95,
+        "AVERAGE LOAD": 8.161844392807412,
+        "ISS ": "ELEKAHIA 1 X 15 MVA, 33/11KV",
+		"ISS CUG": "07074919605",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 6.8,
+        "ASSOCIATED 11KV FEEDERS": "ELEKAHIA VILLAGE",
+        "PEAK LOAD": 2.8,
+        "AVERAGE LOAD.1": 1.6610461852064535,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "Rainbow",
+        "MAX.  LOAD": 16.95,
+        "AVERAGE LOAD": 8.161844392807412,
+        "ISS ": "ELEKAHIA 1 X 15 MVA, 33/11KV",
+		"ISS CUG": "07074919605",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 6.8,
+        "ASSOCIATED 11KV FEEDERS": "ELEKAHIA ESTATE",
+        "PEAK LOAD": 4.0,
+        "AVERAGE LOAD.1": 2.5228965860421044,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "RSPUB 1",
+        "MAX.  LOAD": 14.55,
+        "AVERAGE LOAD": 6.307469964171936,
+        "ISS ": "WOJI 1X 15MVA",
+		"ISS CUG": "07074919574",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 12.3,
+        "ASSOCIATED 11KV FEEDERS": "OGBATAI",
+        "PEAK LOAD": 5.4,
+        "AVERAGE LOAD.1": 2.9331109550277823,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "RSPUB 1",
+        "MAX.  LOAD": 14.55,
+        "AVERAGE LOAD": 6.307469964171936,
+        "ISS ": "WOJI 1X 15MVA",
+		"ISS CUG": "07074919574",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 12.3,
+        "ASSOCIATED 11KV FEEDERS": "NVUIGWE",
+        "PEAK LOAD": 6.9,
+        "AVERAGE LOAD.1": 3.9022408504444503,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "REFINERY Line 2",
+        "MAX.  LOAD": 20.75,
+        "AVERAGE LOAD": 9.509951050200803,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 9.5,
+        "ASSOCIATED 11KV FEEDERS": "RUMUOMOI",
+        "PEAK LOAD": 7.0,
+        "AVERAGE LOAD.1": 4.499756228889365,
+        "REMARKS": "Tied to New GRA",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "REFINERY Line 2",
+        "MAX.  LOAD": 20.75,
+        "AVERAGE LOAD": 9.509951050200803,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": 9.5,
+        "ASSOCIATED 11KV FEEDERS": "RUMUOKWUTA",
+        "PEAK LOAD": 6.0,
+        "AVERAGE LOAD.1": 3.62729761078328,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "REFINERY Line 2",
+        "MAX.  LOAD": 20.75,
+        "AVERAGE LOAD": 9.509951050200803,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 12.5,
+        "ASSOCIATED 11KV FEEDERS": "OMERELU",
+        "PEAK LOAD": 5.6,
+        "AVERAGE LOAD.1": 2.8084112876029828,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4A 100MVA",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 68.8,
+        "NAME OF 33KV FEEDERS": "REFINERY Line 2",
+        "MAX.  LOAD": 20.75,
+        "AVERAGE LOAD": 9.509951050200803,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 12.5,
+        "ASSOCIATED 11KV FEEDERS": "WATER LINES",
+        "PEAK LOAD": 6.9,
+        "AVERAGE LOAD.1": 4.621912487279973,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "RUMUOLA",
+        "MAX.  LOAD": 20.6,
+        "AVERAGE LOAD": 9.58804457873347,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": "T3 15MVA 33/11KV ",
+        "Transformer load": 12.1,
+        "ASSOCIATED 11KV FEEDERS": "BARRACKS",
+        "PEAK LOAD": 6.0,
+        "AVERAGE LOAD.1": 3.850780659933863,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "RUMUOLA",
+        "MAX.  LOAD": 20.6,
+        "AVERAGE LOAD": 9.58804457873347,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": "T3 15MVA 33/11KV ",
+        "Transformer load": 12.1,
+        "ASSOCIATED 11KV FEEDERS": "SHELL INDUSTRIAL",
+        "PEAK LOAD": 6.4,
+        "AVERAGE LOAD.1": 4.033719012497924,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "RUMUOLA",
+        "MAX.  LOAD": 20.6,
+        "AVERAGE LOAD": 9.58804457873347,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": "T4 15MVA 33/11KV",
+        "Transformer load": 12.8,
+        "ASSOCIATED 11KV FEEDERS": "NEW GRA",
+        "PEAK LOAD": 7.0,
+        "AVERAGE LOAD.1": 4.503089562222698,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "RUMUOLA",
+        "MAX.  LOAD": 20.6,
+        "AVERAGE LOAD": 9.58804457873347,
+        "ISS ": "RUMUOLA 4 X 15MVA",
+        "TRANSFORMER LIMITATION": "T4 15MVA 33/11KV",
+        "Transformer load": 12.8,
+        "ASSOCIATED 11KV FEEDERS": "BORI CAMP",
+        "PEAK LOAD": 5.8,
+        "AVERAGE LOAD.1": 3.4115613490415946,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "Airport",
+        "MAX.  LOAD": 19.85,
+        "AVERAGE LOAD": 9.810627619043021,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "Akani",
+        "MAX.  LOAD": 16.4,
+        "AVERAGE LOAD": 7.9136883390900685,
+        "ISS ": "AKANI INJ S/S  2X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 8.1,
+        "ASSOCIATED 11KV FEEDERS": "RUMUOGBA",
+        "PEAK LOAD": 3.9,
+        "AVERAGE LOAD.1": 1.9786670730097589,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "Akani",
+        "MAX.  LOAD": 16.4,
+        "AVERAGE LOAD": 7.9136883390900685,
+        "ISS ": "AKANI INJ S/S  2X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 8.1,
+        "ASSOCIATED 11KV FEEDERS": "RUMUOROLU",
+        "PEAK LOAD": 4.3,
+        "AVERAGE LOAD.1": 2.4330925864390225,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "Akani",
+        "MAX.  LOAD": 16.4,
+        "AVERAGE LOAD": 7.9136883390900685,
+        "ISS ": "AKANI INJ S/S  2X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 9.3,
+        "ASSOCIATED 11KV FEEDERS": "OLD ABA ROAD",
+        "PEAK LOAD": 5.7,
+        "AVERAGE LOAD.1": 3.7247759099708144,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "Akani",
+        "MAX.  LOAD": 16.4,
+        "AVERAGE LOAD": 7.9136883390900685,
+        "ISS ": "AKANI INJ S/S  2X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 9.3,
+        "ASSOCIATED 11KV FEEDERS": "RUMUIBEKWE",
+        "PEAK LOAD": 0.9,
+        "AVERAGE LOAD.1": 0.49128642178492427,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.5,
+        "NAME OF 33KV FEEDERS": "Akani",
+        "MAX.  LOAD": 16.4,
+        "AVERAGE LOAD": 7.9136883390900685,
+        "ISS ": "AKANI INJ S/S  2X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 9.3,
+        "ASSOCIATED 11KV FEEDERS": "RUMUKALAGBO",
+        "PEAK LOAD": 3.4,
+        "AVERAGE LOAD.1": 1.8088700001878584,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH MAINS 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T2A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": "OUT OF SERVICE",
+        "NAME OF 33KV FEEDERS": NaN,
+        "MAX.  LOAD": NaN,
+        "AVERAGE LOAD": NaN,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Rumuolumini",
+        "MAX.  LOAD": 14.15,
+        "AVERAGE LOAD": 7.612870180890596,
+        "ISS ": "SCHOOL OF NURSING 1 X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 8.7,
+        "ASSOCIATED 11KV FEEDERS": "AGIP ROAD",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Rumuolumini",
+        "MAX.  LOAD": 14.15,
+        "AVERAGE LOAD": 7.612870180890596,
+        "ISS ": "SCHOOL OF NURSING 1 X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 8.7,
+        "ASSOCIATED 11KV FEEDERS": "ABACHA ROAD",
+        "PEAK LOAD": 2.0,
+        "AVERAGE LOAD.1": 0.2161512291382913,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Rumuolumini",
+        "MAX.  LOAD": 14.15,
+        "AVERAGE LOAD": 7.612870180890596,
+        "ISS ": "SCHOOL OF NURSING 1 X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 8.7,
+        "ASSOCIATED 11KV FEEDERS": "SCHOOL OF NURSING",
+        "PEAK LOAD": 6.7,
+        "AVERAGE LOAD.1": 4.328034310913683,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Rumuolumini",
+        "MAX.  LOAD": 14.15,
+        "AVERAGE LOAD": 7.612870180890596,
+        "ISS ": "SCHOOL OF NURSING 1 X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV (NOT CONNECTED)",
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Borokiri",
+        "MAX.  LOAD": 13.9,
+        "AVERAGE LOAD": 4.433415807422157,
+        "ISS ": "BOROKIRI 1X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 7.8,
+        "ASSOCIATED 11KV FEEDERS": "NEW ROAD",
+        "PEAK LOAD": 2.6,
+        "AVERAGE LOAD.1": 1.7138006164537651,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Borokiri",
+        "MAX.  LOAD": 13.9,
+        "AVERAGE LOAD": 4.433415807422157,
+        "ISS ": "BOROKIRI 1X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 7.8,
+        "ASSOCIATED 11KV FEEDERS": "HAROLD WILSON",
+        "PEAK LOAD": 5.2,
+        "AVERAGE LOAD.1": 3.525854130734718,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Borokiri",
+        "MAX.  LOAD": 13.9,
+        "AVERAGE LOAD": 4.433415807422157,
+        "ISS ": "EASTERN BYPASS 1X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.5,
+        "ASSOCIATED 11KV FEEDERS": "MARINE BASE",
+        "PEAK LOAD": 2.9,
+        "AVERAGE LOAD.1": 1.593312004117454,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Borokiri",
+        "MAX.  LOAD": 13.9,
+        "AVERAGE LOAD": 4.433415807422157,
+        "ISS ": "EASTERN BYPASS 1X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.5,
+        "ASSOCIATED 11KV FEEDERS": "EASTERN BYPASS",
+        "PEAK LOAD": 2.2,
+        "AVERAGE LOAD.1": 0.10194597069597068,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "UST",
+        "MAX.  LOAD": 15.52,
+        "AVERAGE LOAD": 12.031692781848164,
+        "ISS ": "UST 1X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.4,
+        "ASSOCIATED 11KV FEEDERS": "UST",
+        "PEAK LOAD": 0.2,
+        "AVERAGE LOAD.1": 0.1000163398692811,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "UST",
+        "MAX.  LOAD": 15.52,
+        "AVERAGE LOAD": 12.031692781848164,
+        "ISS ": "UST 1X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.4,
+        "ASSOCIATED 11KV FEEDERS": "OJOTO",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "UST",
+        "MAX.  LOAD": 15.52,
+        "AVERAGE LOAD": 12.031692781848164,
+        "ISS ": "UST 1X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.4,
+        "ASSOCIATED 11KV FEEDERS": "RUMUEME",
+        "PEAK LOAD": 4.1,
+        "AVERAGE LOAD.1": 2.424720099145167,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "UST",
+        "MAX.  LOAD": 15.52,
+        "AVERAGE LOAD": 12.031692781848164,
+        "ISS ": "UST 1X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.4,
+        "ASSOCIATED 11KV FEEDERS": "WOKOMA",
+        "PEAK LOAD": 5.2,
+        "AVERAGE LOAD.1": 2.4899964253551894,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "UST",
+        "MAX.  LOAD": 15.52,
+        "AVERAGE LOAD": 12.031692781848164,
+        "ISS ": "EAGLE ISLAND 1 X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 5.0,
+        "ASSOCIATED 11KV FEEDERS": "EAGLE ISLAND",
+        "PEAK LOAD": 3.9,
+        "AVERAGE LOAD.1": 2.3838775488084436,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Secretariat",
+        "MAX.  LOAD": 11.639999999999999,
+        "AVERAGE LOAD": 11.519188541389743,
+        "ISS ": "MARINE BASE 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 7.8,
+        "ASSOCIATED 11KV FEEDERS": "NPA",
+        "PEAK LOAD": 3.3,
+        "AVERAGE LOAD.1": 1.022052256460005,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Secretariat",
+        "MAX.  LOAD": 11.639999999999999,
+        "AVERAGE LOAD": 11.519188541389743,
+        "ISS ": "MARINE BASE 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 7.8,
+        "ASSOCIATED 11KV FEEDERS": "STATION ROAD",
+        "PEAK LOAD": 4.7,
+        "AVERAGE LOAD.1": 3.210781295089298,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Secretariat",
+        "MAX.  LOAD": 11.639999999999999,
+        "AVERAGE LOAD": 11.519188541389743,
+        "ISS ": "MARINE BASE 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2  15MVA 33/11KV",
+        "Transformer load": 7.4,
+        "ASSOCIATED 11KV FEEDERS": "AMADI NORTH",
+        "PEAK LOAD": 4.0,
+        "AVERAGE LOAD.1": 2.738490114346322,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T4 100MVA ",
+        "TF CAPACITY(MW)": 80.0,
+        "TRANSFORMER LOAD (MW)": 55.2,
+        "NAME OF 33KV FEEDERS": "Secretariat",
+        "MAX.  LOAD": 11.639999999999999,
+        "AVERAGE LOAD": 11.519188541389743,
+        "ISS ": "MARINE BASE 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2  15MVA 33/11KV",
+        "Transformer load": 7.4,
+        "ASSOCIATED 11KV FEEDERS": "CHURCHILL",
+        "PEAK LOAD": 3.8,
+        "AVERAGE LOAD.1": 2.495896821557215,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "UTC",
+        "MAX.  LOAD": 8.95,
+        "AVERAGE LOAD": 3.505622827509889,
+        "ISS ": "RECLAMATION 1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 6.4,
+        "ASSOCIATED 11KV FEEDERS": "NAVY",
+        "PEAK LOAD": 2.9,
+        "AVERAGE LOAD.1": 1.6799842048637723,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "UTC",
+        "MAX.  LOAD": 8.95,
+        "AVERAGE LOAD": 3.505622827509889,
+        "ISS ": "RECLAMATION 1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 6.4,
+        "ASSOCIATED 11KV FEEDERS": "HABOUR ROAD",
+        "PEAK LOAD": 3.6,
+        "AVERAGE LOAD.1": 2.199186142408808,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "UTC",
+        "MAX.  LOAD": 8.95,
+        "AVERAGE LOAD": 3.505622827509889,
+        "ISS ": "UTC 1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV=3.2",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "AZIKIWE",
+        "PEAK LOAD": 2.3,
+        "AVERAGE LOAD.1": 1.1835461073104632,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "UTC",
+        "MAX.  LOAD": 8.95,
+        "AVERAGE LOAD": 3.505622827509889,
+        "ISS ": "UTC 1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV=3.2",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "ABONNEMA WHARF",
+        "PEAK LOAD": 0.1,
+        "AVERAGE LOAD.1": 0.10000000000000002,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "SilverBird",
+        "MAX.  LOAD": 13.0,
+        "AVERAGE LOAD": 3.4182852814820515,
+        "ISS ": "WATER WORKS 1 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.4,
+        "ASSOCIATED 11KV FEEDERS": "UDI",
+        "PEAK LOAD": 5.6,
+        "AVERAGE LOAD.1": 3.184027453347754,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "SilverBird",
+        "MAX.  LOAD": 13.0,
+        "AVERAGE LOAD": 3.4182852814820515,
+        "ISS ": "WATER WORKS 1 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.4,
+        "ASSOCIATED 11KV FEEDERS": "NSUKKA",
+        "PEAK LOAD": 6.8,
+        "AVERAGE LOAD.1": 4.718142872126735,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "SilverBird",
+        "MAX.  LOAD": 13.0,
+        "AVERAGE LOAD": 3.4182852814820515,
+        "ISS ": "SILVER BIRD 1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 0.0,
+        "ASSOCIATED 11KV FEEDERS": "IKWERRE ROAD",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "T1B",
+        "MAX.  LOAD": 17.2,
+        "AVERAGE LOAD": 7.005035387099674,
+        "ISS ": "AMADI JUNCTION 2X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "TI BA 15MVA 33/11KV",
+        "Transformer load": 11.4,
+        "ASSOCIATED 11KV FEEDERS": "AMADI RESIDENTIAL",
+        "PEAK LOAD": 5.8,
+        "AVERAGE LOAD.1": 3.4992894144704043,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "T1B",
+        "MAX.  LOAD": 17.2,
+        "AVERAGE LOAD": 7.005035387099674,
+        "ISS ": "AMADI JUNCTION 2X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "TI BA 15MVA 33/11KV",
+        "Transformer load": 11.4,
+        "ASSOCIATED 11KV FEEDERS": "OLD DIOBU",
+        "PEAK LOAD": 6.1,
+        "AVERAGE LOAD.1": 3.4242757085577886,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "T1B",
+        "MAX.  LOAD": 17.2,
+        "AVERAGE LOAD": 7.005035387099674,
+        "ISS ": "AMADI JUNCTION 2X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1BB  15MVA 33/11KV",
+        "Transformer load": 9.6,
+        "ASSOCIATED 11KV FEEDERS": "AMADI SOUTH",
+        "PEAK LOAD": 4.1,
+        "AVERAGE LOAD.1": 1.936812641601591,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "T1B",
+        "MAX.  LOAD": 17.2,
+        "AVERAGE LOAD": 7.005035387099674,
+        "ISS ": "AMADI JUNCTION 2X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1BB  15MVA 33/11KV",
+        "Transformer load": 9.6,
+        "ASSOCIATED 11KV FEEDERS": "OWERRI ROAD",
+        "PEAK LOAD": 6.2,
+        "AVERAGE LOAD.1": 4.019283796067685,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 39.2,
+        "NAME OF 33KV FEEDERS": "T1B",
+        "MAX.  LOAD": 17.2,
+        "AVERAGE LOAD": 7.005035387099674,
+        "ISS ": "AMADI JUNCTION 2X15MVA,33/11KV",
+        "TRANSFORMER LIMITATION": "T1BB  15MVA 33/11KV",
+        "Transformer load": 9.6,
+        "ASSOCIATED 11KV FEEDERS": "MILE ONE",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T2B 30MVA ",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": "OUT OF SERVICE",
+        "NAME OF 33KV FEEDERS": NaN,
+        "MAX.  LOAD": NaN,
+        "AVERAGE LOAD": NaN,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "PH TOWN 132/33/11KV",
+        "TRANSMISSION POWER TF (MVA)": "T2A 30MVA ",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": "OUT OF SERVICE",
+        "NAME OF 33KV FEEDERS": NaN,
+        "MAX.  LOAD": NaN,
+        "AVERAGE LOAD": NaN,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AFAM TOWN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 30MVA",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": 26.3,
+        "NAME OF 33KV FEEDERS": "Ndoki",
+        "MAX.  LOAD": 5.6,
+        "AVERAGE LOAD": 2.419382637785739,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AFAM TOWN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 30MVA",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": 26.3,
+        "NAME OF 33KV FEEDERS": "Komkom",
+        "MAX.  LOAD": 24.512999999999998,
+        "AVERAGE LOAD": 9.73693884405976,
+        "ISS ": "KOM KOM NIPP   2X 15MVA ",
+        "TRANSFORMER LIMITATION": "T1 15MVA",
+        "Transformer load": 6.3,
+        "ASSOCIATED 11KV FEEDERS": "AFAM ROAD",
+        "PEAK LOAD": 3.2,
+        "AVERAGE LOAD.1": 1.7555022095573618,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AFAM TOWN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 30MVA",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": 26.3,
+        "NAME OF 33KV FEEDERS": "Komkom",
+        "MAX.  LOAD": 24.512999999999998,
+        "AVERAGE LOAD": 9.73693884405976,
+        "ISS ": "KOM KOM NIPP   2X 15MVA ",
+        "TRANSFORMER LIMITATION": "T1 15MVA",
+        "Transformer load": 6.3,
+        "ASSOCIATED 11KV FEEDERS": "RAILWAY",
+        "PEAK LOAD": 3.7,
+        "AVERAGE LOAD.1": 2.0385729344419823,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AFAM TOWN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 30MVA",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": 26.3,
+        "NAME OF 33KV FEEDERS": "Komkom",
+        "MAX.  LOAD": 24.512999999999998,
+        "AVERAGE LOAD": 9.73693884405976,
+        "ISS ": "KOM KOM NIPP   2X 15MVA ",
+        "TRANSFORMER LIMITATION": "T2 15 MVA, INACTIVE )",
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "NTA",
+        "MAX.  LOAD": 18.5,
+        "AVERAGE LOAD": 9.565698020306,
+        "ISS ": "NTA 2X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.8,
+        "ASSOCIATED 11KV FEEDERS": "OHAKWE",
+        "PEAK LOAD": 4.9,
+        "AVERAGE LOAD.1": 1.044423741094502,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "NTA",
+        "MAX.  LOAD": 18.5,
+        "AVERAGE LOAD": 9.565698020306,
+        "ISS ": "NTA 2X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.8,
+        "ASSOCIATED 11KV FEEDERS": "LOCATION ROAD",
+        "PEAK LOAD": 4.9,
+        "AVERAGE LOAD.1": 2.767201789402414,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "NTA",
+        "MAX.  LOAD": 18.5,
+        "AVERAGE LOAD": 9.565698020306,
+        "ISS ": "NTA 2X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 10.1,
+        "ASSOCIATED 11KV FEEDERS": "MGBUOBA",
+        "PEAK LOAD": 4.1,
+        "AVERAGE LOAD.1": 2.0498289905250564,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "NTA",
+        "MAX.  LOAD": 18.5,
+        "AVERAGE LOAD": 9.565698020306,
+        "ISS ": "NTA 2X15MVA 33/11KV ",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 10.1,
+        "ASSOCIATED 11KV FEEDERS": "OZUOBA",
+        "PEAK LOAD": 6.7,
+        "AVERAGE LOAD.1": 3.6204596288564015,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "NTA",
+        "MAX.  LOAD": 18.5,
+        "AVERAGE LOAD": 9.565698020306,
+        "ISS ": "OZUOBA 2 X 7.5MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "TI 7.5MVA 33/11KV",
+        "Transformer load": 3.2,
+        "ASSOCIATED 11KV FEEDERS": "BAKERY ROAD",
+        "PEAK LOAD": 3.6,
+        "AVERAGE LOAD.1": 1.6039599578490298,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "NTA",
+        "MAX.  LOAD": 18.5,
+        "AVERAGE LOAD": 9.565698020306,
+        "ISS ": "OZUOBA 2 X 7.5MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 &.5MVA 33/11KV",
+        "Transformer load": 7.3,
+        "ASSOCIATED 11KV FEEDERS": "EGBELU",
+        "PEAK LOAD": 7.3,
+        "AVERAGE LOAD.1": 4.328109394076756,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "UPTH",
+        "MAX.  LOAD": 16.6,
+        "AVERAGE LOAD": 11.16809872835645,
+        "ISS ": "CHOBA 2 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.6,
+        "ASSOCIATED 11KV FEEDERS": "ALUU",
+        "PEAK LOAD": 6.7,
+        "AVERAGE LOAD.1": 4.1466504278479075,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "UPTH",
+        "MAX.  LOAD": 16.6,
+        "AVERAGE LOAD": 11.16809872835645,
+        "ISS ": "CHOBA 2 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.6,
+        "ASSOCIATED 11KV FEEDERS": "CHOBA",
+        "PEAK LOAD": 3.7,
+        "AVERAGE LOAD.1": 1.976647096082643,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "UPTH",
+        "MAX.  LOAD": 16.6,
+        "AVERAGE LOAD": 11.16809872835645,
+        "ISS ": "CHOBA 2 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 12.6,
+        "ASSOCIATED 11KV FEEDERS": "RUMUEKINI",
+        "PEAK LOAD": 2.4,
+        "AVERAGE LOAD.1": 1.1503050127064114,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "UPTH",
+        "MAX.  LOAD": 16.6,
+        "AVERAGE LOAD": 11.16809872835645,
+        "ISS ": "CHOBA 2 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV (Inactive)",
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "Rumuepirikom",
+        "MAX.  LOAD": 21.8,
+        "AVERAGE LOAD": 7.901468031705195,
+        "ISS ": "UOE 1 X 7.5MVA, 2.5MVA",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 5.6,
+        "ASSOCIATED 11KV FEEDERS": "AKER ROAD",
+        "PEAK LOAD": 5.6,
+        "AVERAGE LOAD.1": 3.997238361402276,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "Rumuepirikom",
+        "MAX.  LOAD": 21.8,
+        "AVERAGE LOAD": 7.901468031705195,
+        "ISS ": "UOE 1 X 7.5MVA, 2.5MVA",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 5.6,
+        "ASSOCIATED 11KV FEEDERS": "IWOFE",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "Rumuepirikom",
+        "MAX.  LOAD": 21.8,
+        "AVERAGE LOAD": 7.901468031705195,
+        "ISS ": "RUMUEPIRIKOM 1X15MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 6.9,
+        "ASSOCIATED 11KV FEEDERS": "ELIOPARANWO",
+        "PEAK LOAD": 6.1,
+        "AVERAGE LOAD.1": 3.557082785463974,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 56.9,
+        "NAME OF 33KV FEEDERS": "Rumuepirikom",
+        "MAX.  LOAD": 21.8,
+        "AVERAGE LOAD": 7.901468031705195,
+        "ISS ": "RUMUEPIRIKOM 1X15MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 6.9,
+        "ASSOCIATED 11KV FEEDERS": "KALA",
+        "PEAK LOAD": 3.9,
+        "AVERAGE LOAD.1": 1.383256920305681,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "Rukpokwu",
+        "MAX.  LOAD": 18.4,
+        "AVERAGE LOAD": 9.659989091947983,
+        "ISS ": "RUKPOKWU 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 17.7,
+        "ASSOCIATED 11KV FEEDERS": "MARKET ROAD",
+        "PEAK LOAD": 6.4,
+        "AVERAGE LOAD.1": 3.754343367799614,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "Rukpokwu",
+        "MAX.  LOAD": 18.4,
+        "AVERAGE LOAD": 9.659989091947983,
+        "ISS ": "RUKPOKWU 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 17.7,
+        "ASSOCIATED 11KV FEEDERS": "ADP",
+        "PEAK LOAD": 5.5,
+        "AVERAGE LOAD.1": 3.4068404139008597,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "Rukpokwu",
+        "MAX.  LOAD": 18.4,
+        "AVERAGE LOAD": 9.659989091947983,
+        "ISS ": "RUKPOKWU 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 17.7,
+        "ASSOCIATED 11KV FEEDERS": "SARS ROAD",
+        "PEAK LOAD": 5.9,
+        "AVERAGE LOAD.1": 3.4310778343896597,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "Rukpokwu",
+        "MAX.  LOAD": 18.4,
+        "AVERAGE LOAD": 9.659989091947983,
+        "ISS ": "ELIOZU1X15MVA, 33/11KV (AIRPORT OPM ROAD NIPP)",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 11.0,
+        "ASSOCIATED 11KV FEEDERS": "OPM",
+        "PEAK LOAD": 5.5,
+        "AVERAGE LOAD.1": 3.2426461429015707,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "Rukpokwu",
+        "MAX.  LOAD": 18.4,
+        "AVERAGE LOAD": 9.659989091947983,
+        "ISS ": "ELIOZU1X15MVA, 33/11KV (AIRPORT OPM ROAD NIPP)",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 11.0,
+        "ASSOCIATED 11KV FEEDERS": "SHELL ESTATE",
+        "PEAK LOAD": 3.0,
+        "AVERAGE LOAD.1": 0.45484290525276977,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "Rukpokwu",
+        "MAX.  LOAD": 18.4,
+        "AVERAGE LOAD": 9.659989091947983,
+        "ISS ": "ELIOZU1X15MVA, 33/11KV (AIRPORT OPM ROAD NIPP)",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 11.0,
+        "ASSOCIATED 11KV FEEDERS": "PIPE LINE",
+        "PEAK LOAD": 4.9,
+        "AVERAGE LOAD.1": 2.356484762360681,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "GREATER PH",
+        "MAX.  LOAD": 11.1,
+        "AVERAGE LOAD": 5.111036420567913,
+        "ISS ": "AIRPORT OMAGWA 1 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "IGWURUTA",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "RUMUOSI 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 29.3,
+        "NAME OF 33KV FEEDERS": "GREATER PH",
+        "MAX.  LOAD": 11.1,
+        "AVERAGE LOAD": 5.111036420567913,
+        "ISS ": "AIRPORT OMAGWA 1 X 15 MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "AIRPORT COMPLEX",
+        "PEAK LOAD": 2.4,
+        "AVERAGE LOAD.1": 0.8863396247276637,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Igbo Etche",
+        "MAX.  LOAD": 10.7,
+        "AVERAGE LOAD": 3.021641382709968,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Oyigbo",
+        "MAX.  LOAD": 9.9,
+        "AVERAGE LOAD": 5.993708085283529,
+        "ISS ": "OYIGBO 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T 1 15MVA",
+        "Transformer load": 8.8,
+        "ASSOCIATED 11KV FEEDERS": "TAP",
+        "PEAK LOAD": 4.5,
+        "AVERAGE LOAD.1": 2.489273953312139,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Oyigbo",
+        "MAX.  LOAD": 9.9,
+        "AVERAGE LOAD": 5.993708085283529,
+        "ISS ": "OYIGBO 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T 1 15MVA",
+        "Transformer load": 8.8,
+        "ASSOCIATED 11KV FEEDERS": "OLU OBASANJO",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Oyigbo",
+        "MAX.  LOAD": 9.9,
+        "AVERAGE LOAD": 5.993708085283529,
+        "ISS ": "OYIGBO 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T 1 15MVA",
+        "Transformer load": 8.8,
+        "ASSOCIATED 11KV FEEDERS": "BRISTOL",
+        "PEAK LOAD": 4.3,
+        "AVERAGE LOAD.1": 2.3364251189071146,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Oyigbo",
+        "MAX.  LOAD": 9.9,
+        "AVERAGE LOAD": 5.993708085283529,
+        "ISS ": "OYIGBO 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA",
+        "Transformer load": 6.6,
+        "ASSOCIATED 11KV FEEDERS": "ELELENWO",
+        "PEAK LOAD": 2.9,
+        "AVERAGE LOAD.1": 1.7686221035280258,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Oyigbo",
+        "MAX.  LOAD": 9.9,
+        "AVERAGE LOAD": 5.993708085283529,
+        "ISS ": "OYIGBO 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA",
+        "Transformer load": 6.6,
+        "ASSOCIATED 11KV FEEDERS": "ZENITH",
+        "PEAK LOAD": 3.7,
+        "AVERAGE LOAD.1": 1.9887355875679387,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Timber",
+        "MAX.  LOAD": 9.8,
+        "AVERAGE LOAD": 4.303639146501236,
+        "ISS ": "TIMBER 1X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA",
+        "Transformer load": 9.9,
+        "ASSOCIATED 11KV FEEDERS": "MBANO JUNCTION",
+        "PEAK LOAD": 6.0,
+        "AVERAGE LOAD.1": 3.2251249057766525,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Timber",
+        "MAX.  LOAD": 9.8,
+        "AVERAGE LOAD": 4.303639146501236,
+        "ISS ": "TIMBER 1X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA",
+        "Transformer load": 9.9,
+        "ASSOCIATED 11KV FEEDERS": "FIRST BANK",
+        "PEAK LOAD": 4.9,
+        "AVERAGE LOAD.1": 2.18058025593548,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Onne",
+        "MAX.  LOAD": 12.0,
+        "AVERAGE LOAD": 3.177826486601034,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "REFINERY 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1    15MVA 33/11KV",
+        "Transformer load": 10.8,
+        "ASSOCIATED 11KV FEEDERS": "OKRIKA",
+        "PEAK LOAD": 5.7,
+        "AVERAGE LOAD.1": 2.657164797490539,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "REFINERY 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1    15MVA 33/11KV",
+        "Transformer load": 10.8,
+        "ASSOCIATED 11KV FEEDERS": "COT GAS",
+        "PEAK LOAD": 5.3,
+        "AVERAGE LOAD.1": 2.0785423017036173,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "REFINERY 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2    15MVA 33/11KV =OUT",
+        "Transformer load": 10.8,
+        "ASSOCIATED 11KV FEEDERS": "PPMC",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "REFINERY 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2    15MVA 33/11KV =OUT",
+        "Transformer load": 10.8,
+        "ASSOCIATED 11KV FEEDERS": "REFINERY",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "ELEME (NEW TOWN)  1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA (Decommisioned)",
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": "EBUBU",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "Tied to Okrika",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "ELEME (NEW TOWN)  1X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA (Decommisioned)",
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": "OGALI",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "TIED WITH EBUBU",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "BORI TOWN 1X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.9,
+        "ASSOCIATED 11KV FEEDERS": "TTC",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "Bori",
+        "MAX.  LOAD": 14.4,
+        "AVERAGE LOAD": 4.443008589664349,
+        "ISS ": "BORI TOWN 1X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.9,
+        "ASSOCIATED 11KV FEEDERS": "CHAIRMAN'S LODGE",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "RSTV",
+        "MAX.  LOAD": 10.0,
+        "AVERAGE LOAD": 5.004127223806781,
+        "ISS ": "RSTV (BRISTOL) 1 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 10.1,
+        "ASSOCIATED 11KV FEEDERS": "PALACE ROAD",
+        "PEAK LOAD": 6.6,
+        "AVERAGE LOAD.1": 3.8426562845219325,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "RSTV",
+        "MAX.  LOAD": 10.0,
+        "AVERAGE LOAD": 5.004127223806781,
+        "ISS ": "RSTV (BRISTOL) 1 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 10.1,
+        "ASSOCIATED 11KV FEEDERS": "AKPAJO",
+        "PEAK LOAD": 4.7,
+        "AVERAGE LOAD.1": 1.7935755465107288,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 62.3,
+        "NAME OF 33KV FEEDERS": "RSTV",
+        "MAX.  LOAD": 10.0,
+        "AVERAGE LOAD": 5.004127223806781,
+        "ISS ": "NVUIGWE 1 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1 1 X 7.5MVA",
+        "Transformer load": 2.3,
+        "ASSOCIATED 11KV FEEDERS": "CIRCULAR ROAD",
+        "PEAK LOAD": 2.3,
+        "AVERAGE LOAD.1": 1.2502669435625267,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ELELENWO 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": "OUT OF SERVICE",
+        "NAME OF 33KV FEEDERS": NaN,
+        "MAX.  LOAD": NaN,
+        "AVERAGE LOAD": NaN,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AHOADA       132/33KV ",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 6.2,
+        "NAME OF 33KV FEEDERS": "Abonema",
+        "MAX.  LOAD": 2.8,
+        "AVERAGE LOAD": 1.001168691200538,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AHOADA       132/33KV ",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 6.2,
+        "NAME OF 33KV FEEDERS": "Buguma",
+        "MAX.  LOAD": 3.3,
+        "AVERAGE LOAD": 1.4776089106697565,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AHOADA       132/33KV ",
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 6.2,
+        "NAME OF 33KV FEEDERS": "Emohua",
+        "MAX.  LOAD": 3.2,
+        "AVERAGE LOAD": 0.35780639003199854,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AHOADA       132/33KV ",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA ",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 7.8,
+        "NAME OF 33KV FEEDERS": "Isiokpo",
+        "MAX.  LOAD": 0.0,
+        "AVERAGE LOAD": 0.0,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "AHOADA       132/33KV ",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA ",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 7.8,
+        "NAME OF 33KV FEEDERS": "Ahoada",
+        "MAX.  LOAD": 9.5,
+        "AVERAGE LOAD": 3.9524874988494982,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 90MVA",
+        "TF CAPACITY(MW)": 72.0,
+        "TRANSFORMER LOAD (MW)": 48.7,
+        "NAME OF 33KV FEEDERS": "Imiringi",
+        "MAX.  LOAD": 19.4,
+        "AVERAGE LOAD": 4.947458500944729,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 90MVA",
+        "TF CAPACITY(MW)": 72.0,
+        "TRANSFORMER LOAD (MW)": 48.7,
+        "NAME OF 33KV FEEDERS": "GOVT HOUSE",
+        "MAX.  LOAD": 7.0,
+        "AVERAGE LOAD": 2.1696484896750925,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 90MVA",
+        "TF CAPACITY(MW)": 72.0,
+        "TRANSFORMER LOAD (MW)": 48.7,
+        "NAME OF 33KV FEEDERS": "Opolo",
+        "MAX.  LOAD": 19.4,
+        "AVERAGE LOAD": 4.734376741373544,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 45.3,
+        "NAME OF 33KV FEEDERS": "Amasoma",
+        "MAX.  LOAD": 19.4,
+        "AVERAGE LOAD": 4.2812001790561345,
+        "ISS ": "AMASOMA 1X7.5MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV ",
+        "Transformer load": 2.7,
+        "ASSOCIATED 11KV FEEDERS": "LOCAL GOVERNMENT",
+        "PEAK LOAD": 1.2,
+        "AVERAGE LOAD.1": 0.37740363117640957,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 45.3,
+        "NAME OF 33KV FEEDERS": "Amasoma",
+        "MAX.  LOAD": 19.4,
+        "AVERAGE LOAD": 4.2812001790561345,
+        "ISS ": "AMASOMA 1X7.5MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV ",
+        "Transformer load": 2.7,
+        "ASSOCIATED 11KV FEEDERS": "NDU",
+        "PEAK LOAD": 0.5,
+        "AVERAGE LOAD.1": 0.06944834447337253,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 45.3,
+        "NAME OF 33KV FEEDERS": "Amasoma",
+        "MAX.  LOAD": 19.4,
+        "AVERAGE LOAD": 4.2812001790561345,
+        "ISS ": "AMASOMA 1X7.5MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV ",
+        "Transformer load": 2.7,
+        "ASSOCIATED 11KV FEEDERS": "AMASOMA II",
+        "PEAK LOAD": 1.0,
+        "AVERAGE LOAD.1": 0.2321355307601715,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 45.3,
+        "NAME OF 33KV FEEDERS": "Agudama",
+        "MAX.  LOAD": 16.5,
+        "AVERAGE LOAD": 5.376001181175685,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 45.3,
+        "NAME OF 33KV FEEDERS": "Tungbo",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 2.261330088206824,
+        "ISS ": "SABAMA 1*7.5MVA INJ S/S",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 3.9,
+        "ASSOCIATED 11KV FEEDERS": "OFONI",
+        "PEAK LOAD": 3.9,
+        "AVERAGE LOAD.1": 0.2818067717215447,
+        "REMARKS": "Tied to Sagbama",
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "YENAGOA  132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T2 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": 45.3,
+        "NAME OF 33KV FEEDERS": "Tungbo",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 2.261330088206824,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 3.9,
+        "ASSOCIATED 11KV FEEDERS": "SAGBAMA",
+        "PEAK LOAD": 3.9,
+        "AVERAGE LOAD.1": 0.3127129691121171,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ITU 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 19.2,
+        "NAME OF 33KV FEEDERS": "Itam",
+        "MAX.  LOAD": 11.0,
+        "AVERAGE LOAD": 5.475068943048104,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ITU 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 19.2,
+        "NAME OF 33KV FEEDERS": "Oku Iboku",
+        "MAX.  LOAD": 8.2,
+        "AVERAGE LOAD": 1.4271392942005658,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "GBARAIN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 2.8,
+        "NAME OF 33KV FEEDERS": "GBARAIN",
+        "MAX.  LOAD": 2.8,
+        "AVERAGE LOAD": 0.37559386679224654,
+        "ISS ": "OGBOLOMA 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 7.0,
+        "ASSOCIATED 11KV FEEDERS": "POLAKU",
+        "PEAK LOAD": 4.1,
+        "AVERAGE LOAD.1": 0.6161519426262542,
+        "REMARKS": "TIED WITH OKOTIAMA",
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "GBARAIN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 2.8,
+        "NAME OF 33KV FEEDERS": "GBARAIN",
+        "MAX.  LOAD": 2.8,
+        "AVERAGE LOAD": 0.37559386679224654,
+        "ISS ": "OGBOLOMA 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 7.0,
+        "ASSOCIATED 11KV FEEDERS": "AGBIA",
+        "PEAK LOAD": 2.9,
+        "AVERAGE LOAD.1": 0.8624689586603066,
+        "REMARKS": "Tied to Okotiama",
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "GBARAIN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 2.8,
+        "NAME OF 33KV FEEDERS": "GBARAIN",
+        "MAX.  LOAD": 2.8,
+        "AVERAGE LOAD": 0.37559386679224654,
+        "ISS ": "OGBOLOMA 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T2 7.5MVA 33/11KV",
+        "Transformer load": 5.7,
+        "ASSOCIATED 11KV FEEDERS": "OKOTIAMA",
+        "PEAK LOAD": 2.9,
+        "AVERAGE LOAD.1": 0.8624689586603066,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "GBARAIN 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1A 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 2.8,
+        "NAME OF 33KV FEEDERS": "GBARAIN",
+        "MAX.  LOAD": 2.8,
+        "AVERAGE LOAD": 0.37559386679224654,
+        "ISS ": "OGBOLOMA 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T2 7.5MVA 33/11KV",
+        "Transformer load": 5.7,
+        "ASSOCIATED 11KV FEEDERS": "KOLOBIRI",
+        "PEAK LOAD": 2.8,
+        "AVERAGE LOAD.1": 0.269799470486278,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BAYELSA STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 36,
+        "NAME OF 33KV FEEDERS": "Abak",
+        "MAX.  LOAD": 13.0,
+        "AVERAGE LOAD": 6.156183624508427,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 36,
+        "NAME OF 33KV FEEDERS": "Ikot Ekpene",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 3.9047696739026243,
+        "ISS ": "IKOT EKPENE 1X7.5 AND 1X15MVA",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV ",
+        "Transformer load": 3.5,
+        "ASSOCIATED 11KV FEEDERS": "UKANA",
+        "PEAK LOAD": 3.8,
+        "AVERAGE LOAD.1": 2.0970359164160586,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 36,
+        "NAME OF 33KV FEEDERS": "Ikot Ekpene",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 3.9047696739026243,
+        "ISS ": "IKOT EKPENE 1X7.5 AND 1X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 12.7,
+        "ASSOCIATED 11KV FEEDERS": "4POINT SHERATON",
+        "PEAK LOAD": 1.4,
+        "AVERAGE LOAD.1": 0.5600274952694704,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 36,
+        "NAME OF 33KV FEEDERS": "Ikot Ekpene",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 3.9047696739026243,
+        "ISS ": "IKOT EKPENE 1X7.5 AND 1X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 12.7,
+        "ASSOCIATED 11KV FEEDERS": "GRA",
+        "PEAK LOAD": 5.0,
+        "AVERAGE LOAD.1": 1.8028363321466456,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 36,
+        "NAME OF 33KV FEEDERS": "Ikot Ekpene",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 3.9047696739026243,
+        "ISS ": "IKOT EKPENE 1X7.5 AND 1X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 12.7,
+        "ASSOCIATED 11KV FEEDERS": "TOWN FEEDER",
+        "PEAK LOAD": 6.4,
+        "AVERAGE LOAD.1": 3.758007712128675,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 36,
+        "NAME OF 33KV FEEDERS": "AFAHA UBE",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 1.991593261641669,
+        "ISS ": "ITAM 3 X 7.5 MVA",
+        "TRANSFORMER LIMITATION": "T3 7.5MVA 33/11KV",
+        "Transformer load": 5.9,
+        "ASSOCIATED 11KV FEEDERS": "IDORO ROAD",
+        "PEAK LOAD": 3.5,
+        "AVERAGE LOAD.1": 1.9729040687233168,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": NaN,
+        "TF CAPACITY(MW)": NaN,
+        "TRANSFORMER LOAD (MW)": NaN,
+        "NAME OF 33KV FEEDERS": "AFAHA UBE",
+        "MAX.  LOAD": 11.5,
+        "AVERAGE LOAD": 1.991593261641669,
+        "ISS ": "ITAM 3 X 7.5 MVA",
+        "TRANSFORMER LIMITATION": "T3 7.5MVA 33/11KV",
+        "Transformer load": 5.9,
+        "ASSOCIATED 11KV FEEDERS": "MBAK",
+        "PEAK LOAD": 3.0,
+        "AVERAGE LOAD.1": 1.811115765296582,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "FOURLANE",
+        "MAX.  LOAD": 16.0,
+        "AVERAGE LOAD": 6.334876314505934,
+        "ISS ": "FOUR LANE 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.9,
+        "ASSOCIATED 11KV FEEDERS": "EWET",
+        "PEAK LOAD": 4.0,
+        "AVERAGE LOAD.1": 1.9947796293964852,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "FOURLANE",
+        "MAX.  LOAD": 16.0,
+        "AVERAGE LOAD": 6.334876314505934,
+        "ISS ": "FOUR LANE 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.9,
+        "ASSOCIATED 11KV FEEDERS": "SHELTER AFRIQUE",
+        "PEAK LOAD": 5.9,
+        "AVERAGE LOAD.1": 4.000840535900818,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "FOURLANE",
+        "MAX.  LOAD": 16.0,
+        "AVERAGE LOAD": 6.334876314505934,
+        "ISS ": "FOUR LANE 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 11.7,
+        "ASSOCIATED 11KV FEEDERS": "NWANIBA",
+        "PEAK LOAD": 6.6,
+        "AVERAGE LOAD.1": 4.102206534949371,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "FOURLANE",
+        "MAX.  LOAD": 16.0,
+        "AVERAGE LOAD": 6.334876314505934,
+        "ISS ": "FOUR LANE 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 11.7,
+        "ASSOCIATED 11KV FEEDERS": "OSONG AMA",
+        "PEAK LOAD": 5.1,
+        "AVERAGE LOAD.1": 2.535863828291361,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "CHAMPIONS BREWERIES",
+        "MAX.  LOAD": 7.0,
+        "AVERAGE LOAD": 1.8846185338516148,
+        "ISS ": "IBOM 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 0.3,
+        "ASSOCIATED 11KV FEEDERS": "WING 1",
+        "PEAK LOAD": 0.3,
+        "AVERAGE LOAD.1": 0.12221934105739085,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "CHAMPIONS BREWERIES",
+        "MAX.  LOAD": 7.0,
+        "AVERAGE LOAD": 1.8846185338516148,
+        "ISS ": "IBOM 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 0.3,
+        "ASSOCIATED 11KV FEEDERS": "WING 2",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "CHAMPIONS BREWERIES",
+        "MAX.  LOAD": 7.0,
+        "AVERAGE LOAD": 1.8846185338516148,
+        "ISS ": "IBOM 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 0.2,
+        "ASSOCIATED 11KV FEEDERS": "WING 3",
+        "PEAK LOAD": 0.23,
+        "AVERAGE LOAD.1": 0.11071531482731306,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "CHAMPIONS BREWERIES",
+        "MAX.  LOAD": 7.0,
+        "AVERAGE LOAD": 1.8846185338516148,
+        "ISS ": "IBOM 2 X 15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 0.2,
+        "ASSOCIATED 11KV FEEDERS": "WING 4",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "IBESIKPO",
+        "MAX.  LOAD": 22.5,
+        "AVERAGE LOAD": 6.807730809551036,
+        "ISS ": "IBESIKPO 1 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1  1 X 7.5MVA",
+        "Transformer load": 1.0,
+        "ASSOCIATED 11KV FEEDERS": "UYO ROAD",
+        "PEAK LOAD": 0.6,
+        "AVERAGE LOAD.1": 0.3163476865212976,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "IBESIKPO",
+        "MAX.  LOAD": 22.5,
+        "AVERAGE LOAD": 6.807730809551036,
+        "ISS ": "IBESIKPO 1 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1  1 X 7.5MVA",
+        "Transformer load": 1.0,
+        "ASSOCIATED 11KV FEEDERS": "EDEBOM",
+        "PEAK LOAD": 0.5,
+        "AVERAGE LOAD.1": 0.12909799488198617,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "IBESIKPO",
+        "MAX.  LOAD": 22.5,
+        "AVERAGE LOAD": 6.807730809551036,
+        "ISS ": "SECRETARIAT 2X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 9.8,
+        "ASSOCIATED 11KV FEEDERS": "INDONGESIT NKANGA",
+        "PEAK LOAD": 2.0,
+        "AVERAGE LOAD.1": 0.46360985246798864,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "IBESIKPO",
+        "MAX.  LOAD": 22.5,
+        "AVERAGE LOAD": 6.807730809551036,
+        "ISS ": "SECRETARIAT 2X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 9.8,
+        "ASSOCIATED 11KV FEEDERS": "AKA ROAD",
+        "PEAK LOAD": 7.8,
+        "AVERAGE LOAD.1": 4.5807790764806935,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "IBESIKPO",
+        "MAX.  LOAD": 22.5,
+        "AVERAGE LOAD": 6.807730809551036,
+        "ISS ": "SECRETARIAT 2X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV ",
+        "Transformer load": 10.4,
+        "ASSOCIATED 11KV FEEDERS": "SIR UDO UDOMA",
+        "PEAK LOAD": 5.1,
+        "AVERAGE LOAD.1": 2.5750272301194514,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 43.5,
+        "NAME OF 33KV FEEDERS": "IBESIKPO",
+        "MAX.  LOAD": 22.5,
+        "AVERAGE LOAD": 6.807730809551036,
+        "ISS ": "SECRETARIAT 2X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV ",
+        "Transformer load": 10.4,
+        "ASSOCIATED 11KV FEEDERS": "IBB AVENUE",
+        "PEAK LOAD": 5.3,
+        "AVERAGE LOAD.1": 3.18544174905804,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "Oron Road",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.127475524484044,
+        "ISS ": "ORON ROAD 2X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.1,
+        "ASSOCIATED 11KV FEEDERS": "WELLINGTON BASSEY",
+        "PEAK LOAD": 3.8,
+        "AVERAGE LOAD.1": 1.7050310754208156,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "Oron Road",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.127475524484044,
+        "ISS ": "ORON ROAD 2X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.1,
+        "ASSOCIATED 11KV FEEDERS": "NSASAK",
+        "PEAK LOAD": 5.2,
+        "AVERAGE LOAD.1": 3.2119158953175195,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "Oron Road",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.127475524484044,
+        "ISS ": "ORON ROAD 2X15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 9.1,
+        "ASSOCIATED 11KV FEEDERS": "IKPA ROAD",
+        "PEAK LOAD": 1.2,
+        "AVERAGE LOAD.1": 0.2856578018121063,
+        "REMARKS": "FEEDS ON IBESIKPO 33KV",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "Oron Road",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.127475524484044,
+        "ISS ": "ORON ROAD 2X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 7.7,
+        "ASSOCIATED 11KV FEEDERS": "BROOKS",
+        "PEAK LOAD": 4.5,
+        "AVERAGE LOAD.1": 1.4559100904922528,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "Oron Road",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.127475524484044,
+        "ISS ": "ORON ROAD 2X15MVA",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 7.7,
+        "ASSOCIATED 11KV FEEDERS": "AKA ITIAM",
+        "PEAK LOAD": 3.6,
+        "AVERAGE LOAD.1": 1.885091895597675,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "OBOT AKARA",
+        "MAX.  LOAD": 8.5,
+        "AVERAGE LOAD": 2.8652341427852317,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "UYO\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60 MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 32,
+        "NAME OF 33KV FEEDERS": "LA MERIDIAN",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 1.986263314797463,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Eket",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 4.754245207057838,
+        "ISS ": "EKET 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1    15MVA 33/11KV",
+        "Transformer load": 6.8,
+        "ASSOCIATED 11KV FEEDERS": "OKON",
+        "PEAK LOAD": 4.76,
+        "AVERAGE LOAD.1": 2.6016884590559144,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Eket",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 4.754245207057838,
+        "ISS ": "EKET 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2   15MVA 33/11KV",
+        "Transformer load": 10.7,
+        "ASSOCIATED 11KV FEEDERS": "IKOT IBIOK",
+        "PEAK LOAD": 6.5,
+        "AVERAGE LOAD.1": 3.717105214661474,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Eket",
+        "MAX.  LOAD": 14.0,
+        "AVERAGE LOAD": 4.754245207057838,
+        "ISS ": "EKET 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2   15MVA 33/11KV",
+        "Transformer load": 10.7,
+        "ASSOCIATED 11KV FEEDERS": "QUA RIVER",
+        "PEAK LOAD": 4.2,
+        "AVERAGE LOAD.1": 2.5379355370930536,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Etinan",
+        "MAX.  LOAD": 5.0,
+        "AVERAGE LOAD": 1.2927391964284582,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Mbo",
+        "MAX.  LOAD": 5.9,
+        "AVERAGE LOAD": 2.27402784097893,
+        "ISS ": "IQUITA ORON 1X7.5MVA, 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1    7.5MVA 33/11KV",
+        "Transformer load": 3.8,
+        "ASSOCIATED 11KV FEEDERS": "MARITIME",
+        "PEAK LOAD": 2.0,
+        "AVERAGE LOAD.1": 1.08071689730023,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Mbo",
+        "MAX.  LOAD": 5.9,
+        "AVERAGE LOAD": 2.27402784097893,
+        "ISS ": "IQUITA ORON 1X7.5MVA, 33/11KV ",
+        "TRANSFORMER LIMITATION": "T1    7.5MVA 33/11KV",
+        "Transformer load": 3.8,
+        "ASSOCIATED 11KV FEEDERS": "MARY HARNEY",
+        "PEAK LOAD": 1.8,
+        "AVERAGE LOAD.1": 0.7629372918197325,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "IBENO",
+        "MAX.  LOAD": 4.0,
+        "AVERAGE LOAD": 0.7831972913812059,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Ekpenukpa",
+        "MAX.  LOAD": 5.7,
+        "AVERAGE LOAD": 1.5552677503337673,
+        "ISS ": "EKPENUKPA  1 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1    15MVA 33/11KV ",
+        "Transformer load": 5.5,
+        "ASSOCIATED 11KV FEEDERS": "RCC",
+        "PEAK LOAD": 4.7,
+        "AVERAGE LOAD.1": 2.446772351225283,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKET\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 40.1,
+        "NAME OF 33KV FEEDERS": "Ekpenukpa",
+        "MAX.  LOAD": 5.7,
+        "AVERAGE LOAD": 1.5552677503337673,
+        "ISS ": "EKPENUKPA  1 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1    15MVA 33/11KV ",
+        "Transformer load": 5.5,
+        "ASSOCIATED 11KV FEEDERS": "AFAHA UQUA",
+        "PEAK LOAD": 1.95,
+        "AVERAGE LOAD.1": 1.502125162313516,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": NaN,
+        "TRANSMISSION POWER TF (MVA)": "T1 40MVA",
+        "TF CAPACITY(MW)": 32.0,
+        "TRANSFORMER LOAD (MW)": "OUT OF SERVICE",
+        "NAME OF 33KV FEEDERS": NaN,
+        "MAX.  LOAD": NaN,
+        "AVERAGE LOAD": NaN,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "INDUSTRIAL",
+        "MAX.  LOAD": 1.05,
+        "AVERAGE LOAD": 0.26669790544540556,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "IKOT ABASI",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.9366224698321488,
+        "ISS ": "IKOT ABASI 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1    7.5MVA 33/11KV ",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "IKOT AKAN",
+        "PEAK LOAD": 2.4,
+        "AVERAGE LOAD.1": 1.5565610989437209,
+        "REMARKS": "Tied to Ete-Urban",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "IKOT ABASI",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.9366224698321488,
+        "ISS ": "IKOT ABASI 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T1    7.5MVA 33/11KV ",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "IBEKWE",
+        "PEAK LOAD": 2.4,
+        "AVERAGE LOAD.1": 1.556239084112147,
+        "REMARKS": "Tied to Ete-Urban",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "IKOT ABASI",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.9366224698321488,
+        "ISS ": "IKOT ABASI 2 X 7.5MVA",
+        "TRANSFORMER LIMITATION": "T2 7.5 MVA 33/11KV",
+        "Transformer load": 1.7,
+        "ASSOCIATED 11KV FEEDERS": "ALSCON",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "IKOT ABASI",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.9366224698321488,
+        "ISS ": "IKOT AKAN, 1 X 7.5MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": " T1 7.5MVA, 33/11KV",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "PORT HARCOURT ROAD",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "IKOT ABASI",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.9366224698321488,
+        "ISS ": "IKOT AKAN, 1 X 7.5MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": " T1 7.5MVA, 33/11KV",
+        "Transformer load": 2.4,
+        "ASSOCIATED 11KV FEEDERS": "ETE URBAN",
+        "PEAK LOAD": 2.4,
+        "AVERAGE LOAD.1": 1.5564630597280342,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EKIM 132/33KV",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 8.7,
+        "NAME OF 33KV FEEDERS": "EKIM",
+        "MAX.  LOAD": 5.2,
+        "AVERAGE LOAD": 1.5145749764185628,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "AKWAIBOM STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "BAO YAO",
+        "MAX.  LOAD": 9.4,
+        "AVERAGE LOAD": 2.3687727992870626,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "OLAM",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.7406612574989424,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "AKAMKPA",
+        "MAX.  LOAD": 4.9,
+        "AVERAGE LOAD": 1.8691536277720922,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "EPZ2",
+        "MAX.  LOAD": 9.6,
+        "AVERAGE LOAD": 3.8797257619642553,
+        "ISS ": "ESUK UTAH NIPP 2*7.5MVA",
+        "TRANSFORMER LIMITATION": "T2 7.5MVA 33/11KV",
+        "Transformer load": 6.0,
+        "ASSOCIATED 11KV FEEDERS": "ESUK UTAN",
+        "PEAK LOAD": 0.6,
+        "AVERAGE LOAD.1": 0.15044143174268837,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "EPZ2",
+        "MAX.  LOAD": 9.6,
+        "AVERAGE LOAD": 3.8797257619642553,
+        "ISS ": "ESUK UTAH NIPP 2*7.5MVA",
+        "TRANSFORMER LIMITATION": "T2 7.5MVA 33/11KV",
+        "Transformer load": 6.0,
+        "ASSOCIATED 11KV FEEDERS": "FEDERAL HOUSING",
+        "PEAK LOAD": 6.0,
+        "AVERAGE LOAD.1": 3.3838476518444893,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "EPZ2",
+        "MAX.  LOAD": 9.6,
+        "AVERAGE LOAD": 3.8797257619642553,
+        "ISS ": "ESUK UTAH NIPP 2*7.5MVA",
+        "TRANSFORMER LIMITATION": "T1 7.5 MVA 33/11KV",
+        "Transformer load": 4.4,
+        "ASSOCIATED 11KV FEEDERS": "8 MILES",
+        "PEAK LOAD": 4.8,
+        "AVERAGE LOAD.1": 2.600987558726318,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.3,
+        "NAME OF 33KV FEEDERS": "STATE HOUSING",
+        "MAX.  LOAD": 10.2,
+        "AVERAGE LOAD": 4.490999933962357,
+        "ISS ": "FLOUR MILL 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 8.3,
+        "ASSOCIATED 11KV FEEDERS": "MCC",
+        "PEAK LOAD": 8.3,
+        "AVERAGE LOAD.1": 4.3277619016097,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T4 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 22.4,
+        "NAME OF 33KV FEEDERS": "FLOUR MILL",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.637320787761031,
+        "ISS ": "FLOUR MILL 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 11.3,
+        "ASSOCIATED 11KV FEEDERS": "INDUSTRIAL",
+        "PEAK LOAD": 5.6,
+        "AVERAGE LOAD.1": 3.825374629014073,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T4 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 22.4,
+        "NAME OF 33KV FEEDERS": "FLOUR MILL",
+        "MAX.  LOAD": 12.5,
+        "AVERAGE LOAD": 4.637320787761031,
+        "ISS ": "FLOUR MILL 2X15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2 15MVA 33/11KV",
+        "Transformer load": 11.3,
+        "ASSOCIATED 11KV FEEDERS": "ESSIEN TOWN",
+        "PEAK LOAD": 5.8,
+        "AVERAGE LOAD.1": 3.987696447713416,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T4 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 22.4,
+        "NAME OF 33KV FEEDERS": "NIGER MILLS",
+        "MAX.  LOAD": 4.7,
+        "AVERAGE LOAD": 1.7171722019180622,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T4 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 22.4,
+        "NAME OF 33KV FEEDERS": "EPZ1",
+        "MAX.  LOAD": 5.2,
+        "AVERAGE LOAD": 2.9282853748588136,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T2 60MVA ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 48,
+        "NAME OF 33KV FEEDERS": NaN,
+        "MAX.  LOAD": NaN,
+        "AVERAGE LOAD": NaN,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": NaN
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "DIAMOND HILLS",
+        "MAX.  LOAD": 9.4,
+        "AVERAGE LOAD": 2.152563661738827,
+        "ISS ": "DIAMOND HILL 2 X7.5MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 5.7,
+        "ASSOCIATED 11KV FEEDERS": "LEOPARD",
+        "PEAK LOAD": 5.7,
+        "AVERAGE LOAD.1": 1.8491564339300066,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "DIAMOND HILLS",
+        "MAX.  LOAD": 9.4,
+        "AVERAGE LOAD": 2.152563661738827,
+        "ISS ": "DIAMOND HILL 2 X7.5MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV ",
+        "Transformer load": 5.7,
+        "ASSOCIATED 11KV FEEDERS": "ESSIEN I /MARIANA",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "INACTIVE",
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "WATERBOARD",
+        "MAX.  LOAD": 4.5,
+        "AVERAGE LOAD": 1.7612294900695524,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "AMIKA",
+        "MAX.  LOAD": 21.0,
+        "AVERAGE LOAD": 8.035357326867084,
+        "ISS ": "AMIKA 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "TI 15MVA 33/11KV",
+        "Transformer load": 12.0,
+        "ASSOCIATED 11KV FEEDERS": "UNICAL",
+        "PEAK LOAD": 6.8,
+        "AVERAGE LOAD.1": 2.6394294599489916,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "AMIKA",
+        "MAX.  LOAD": 21.0,
+        "AVERAGE LOAD": 8.035357326867084,
+        "ISS ": "AMIKA 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "TI 15MVA 33/11KV",
+        "Transformer load": 12.0,
+        "ASSOCIATED 11KV FEEDERS": "CAMEROUN",
+        "PEAK LOAD": 5.2,
+        "AVERAGE LOAD.1": 3.2199259931360906,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "AMIKA",
+        "MAX.  LOAD": 21.0,
+        "AVERAGE LOAD": 8.035357326867084,
+        "ISS ": "AMIKA 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2   15MVA 33/11KV ",
+        "Transformer load": 8.2,
+        "ASSOCIATED 11KV FEEDERS": "TARGET",
+        "PEAK LOAD": 4.2,
+        "AVERAGE LOAD.1": 2.314031899925183,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "AMIKA",
+        "MAX.  LOAD": 21.0,
+        "AVERAGE LOAD": 8.035357326867084,
+        "ISS ": "AMIKA 2 X 15MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2   15MVA 33/11KV ",
+        "Transformer load": 8.2,
+        "ASSOCIATED 11KV FEEDERS": "GOLDIE",
+        "PEAK LOAD": 5.4,
+        "AVERAGE LOAD.1": 3.0511987819514936,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "AMIKA",
+        "MAX.  LOAD": 21.0,
+        "AVERAGE LOAD": 8.035357326867084,
+        "ISS ": "CRUTECH 2 X 7.5MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 7.5MVA 33/11KV",
+        "Transformer load": 4.1,
+        "ASSOCIATED 11KV FEEDERS": "ANANTIGHA",
+        "PEAK LOAD": 4.5,
+        "AVERAGE LOAD.1": 2.922014817918194,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "AMIKA",
+        "MAX.  LOAD": 21.0,
+        "AVERAGE LOAD": 8.035357326867084,
+        "ISS ": "CRUTECH 2 X 7.5MVA 33/11KV",
+        "TRANSFORMER LIMITATION": "T2 7.5MVA 33/11KV",
+        "Transformer load": 4.1,
+        "ASSOCIATED 11KV FEEDERS": "CRUTECH",
+        "PEAK LOAD": 0.0,
+        "AVERAGE LOAD.1": 0.0,
+        "REMARKS": "OUT OF SERVICE",
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "CALABAR\n132/33KV\n",
+        "TRANSMISSION POWER TF (MVA)": "T3 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 38.5,
+        "NAME OF 33KV FEEDERS": "TRANSCORP",
+        "MAX.  LOAD": 3.6,
+        "AVERAGE LOAD": 0.7644749211978874,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ADIABO",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 5,
+        "NAME OF 33KV FEEDERS": "ADIABO",
+        "MAX.  LOAD": 5.0,
+        "AVERAGE LOAD": 2.433097281245273,
+        "ISS ": "TINAPA ROAD 1 X 15MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA, 33/11KV",
+        "Transformer load": 7.7,
+        "ASSOCIATED 11KV FEEDERS": "BACOCO",
+        "PEAK LOAD": 3.0,
+        "AVERAGE LOAD.1": 1.3603173874583867,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ADIABO",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 5,
+        "NAME OF 33KV FEEDERS": "ADIABO",
+        "MAX.  LOAD": 5.0,
+        "AVERAGE LOAD": 2.433097281245273,
+        "ISS ": "TINAPA ROAD 1 X 15MVA, 33/11KV",
+        "TRANSFORMER LIMITATION": "T1 15MVA, 33/11KV",
+        "Transformer load": 7.7,
+        "ASSOCIATED 11KV FEEDERS": "IKOT ENEOBONG",
+        "PEAK LOAD": 4.7,
+        "AVERAGE LOAD.1": 1.831007884311137,
+        "REMARKS": NaN,
+        "STATE LOCATED": "CROSS RIVER STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ABAKALIKI",
+        "TRANSMISSION POWER TF (MVA)": "T1 30MVA  ",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": 13.1,
+        "NAME OF 33KV FEEDERS": "YAHE",
+        "MAX.  LOAD": 13.1,
+        "AVERAGE LOAD": 3.1711660621326825,
+        "ISS ": "IKOM 1 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.3,
+        "ASSOCIATED 11KV FEEDERS": "IKOM TOWN",
+        "PEAK LOAD": 0.9,
+        "AVERAGE LOAD.1": 0.3667015804022981,
+        "REMARKS": NaN,
+        "STATE LOCATED": "EBONYI STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ABAKALIKI",
+        "TRANSMISSION POWER TF (MVA)": "T1 30MVA  ",
+        "TF CAPACITY(MW)": 24.0,
+        "TRANSFORMER LOAD (MW)": 13.1,
+        "NAME OF 33KV FEEDERS": "YAHE",
+        "MAX.  LOAD": 13.1,
+        "AVERAGE LOAD": 3.1711660621326825,
+        "ISS ": "IKOM 1 X 15MVA",
+        "TRANSFORMER LIMITATION": "T1 15MVA 33/11KV",
+        "Transformer load": 2.3,
+        "ASSOCIATED 11KV FEEDERS": "FOUR CORNER",
+        "PEAK LOAD": 1.4,
+        "AVERAGE LOAD.1": 0.6446330223322683,
+        "REMARKS": NaN,
+        "STATE LOCATED": "EBONYI STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "ABAKALIKI",
+        "TRANSMISSION POWER TF (MVA)": "T1 60MVA  ",
+        "TF CAPACITY(MW)": 48.0,
+        "TRANSFORMER LOAD (MW)": 13.6,
+        "NAME OF 33KV FEEDERS": "ITIGIDI",
+        "MAX.  LOAD": 13.3,
+        "AVERAGE LOAD": 3.331981797036805,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "EBONYI STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "FIPL",
+        "TRANSMISSION POWER TF (MVA)": "3 X 35MVA, 11/33KV",
+        "TF CAPACITY(MW)": 84.0,
+        "TRANSFORMER LOAD (MW)": 3,
+        "NAME OF 33KV FEEDERS": "ORDINANCE",
+        "MAX.  LOAD": 19.9,
+        "AVERAGE LOAD": 3.222142739470737,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "FIPL",
+        "TRANSMISSION POWER TF (MVA)": "3 X 35MVA, 11/33KV",
+        "TF CAPACITY(MW)": 84.0,
+        "TRANSFORMER LOAD (MW)": 3,
+        "NAME OF 33KV FEEDERS": "NLNG",
+        "MAX.  LOAD": 3.7,
+        "AVERAGE LOAD": 1.613335628067091,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "EPCL ",
+        "TRANSMISSION POWER TF (MVA)": NaN,
+        "TF CAPACITY(MW)": NaN,
+        "TRANSFORMER LOAD (MW)": 0.2,
+        "NAME OF 33KV FEEDERS": "EPCL",
+        "MAX.  LOAD": 0.2,
+        "AVERAGE LOAD": 0.2000000000000001,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "RIVERS STATE"
+    },
+    {
+        "TRANSMISSION SUBSTATION": "GBOKO TS",
+        "TRANSMISSION POWER TF (MVA)": "60MVA",
+        "TF CAPACITY(MW)": NaN,
+        "TRANSFORMER LOAD (MW)": 11.3,
+        "NAME OF 33KV FEEDERS": "KATSINA ALA",
+        "MAX.  LOAD": 11.3,
+        "AVERAGE LOAD": 0.0,
+        "ISS ": NaN,
+        "TRANSFORMER LIMITATION": NaN,
+        "Transformer load": NaN,
+        "ASSOCIATED 11KV FEEDERS": NaN,
+        "PEAK LOAD": NaN,
+        "AVERAGE LOAD.1": NaN,
+        "REMARKS": NaN,
+        "STATE LOCATED": "BENUE STATE"
+    }
+        ];
+
+const searchInput = document.getElementById('searchInput');
+const searchButton = document.getElementById('searchButton');
+const resultsContainer = document.getElementById('resultsContainer');
+const suggestionsDropdown = document.getElementById('suggestionsDropdown');
+let currentFocus = -1; // Track which suggestion is highlighted
+let issMap = new Map(); // Global ISS map
+
+// Utility functions
+function cleanString(str) {
+    return typeof str === 'string' ? str.trim().toUpperCase() : '';
+}
+
+function formatValue(value) {
+    if (value === null || typeof value === 'undefined' || (typeof value === 'number' && isNaN(value))) {
+        return 'N/A';
+    }
+    return value;
+}
+
+function displayMessage(message, type = 'info') {
+    resultsContainer.innerHTML = `<p class="text-center ${type === 'error' ? 'text-red-500' : 'text-gray-500'}">${message}</p>`;
+}
+
+// Suggestions functionality
+function getSuggestions(searchTerm) {
+    if (!searchTerm) return [];
+    
+    const suggestions = new Set();
+    
+    powerData.forEach(item => {
+        const feeder33KV = cleanString(item["NAME OF 33KV FEEDERS"]);
+        const feeder11KV = cleanString(item["ASSOCIATED 11KV FEEDERS"]);
+        const substation = cleanString(item["TRANSMISSION SUBSTATION"]);
+        
+        if (feeder33KV && feeder33KV.includes(searchTerm)) {
+            suggestions.add(feeder33KV);
+        }
+        if (feeder11KV && feeder11KV.includes(searchTerm)) {
+            suggestions.add(feeder11KV);
+        }
+        if (substation && substation.includes(searchTerm)) {
+            suggestions.add(substation);
+        }
+    });
+    
+    return Array.from(suggestions).sort();
+}
+
+function showSuggestions() {
+    const searchTerm = cleanString(searchInput.value);
+    const suggestions = getSuggestions(searchTerm);
+    
+    suggestionsDropdown.innerHTML = '';
+    currentFocus = -1;
+    
+    if (suggestions.length === 0) {
+        suggestionsDropdown.classList.remove('show');
+        return;
+    }
+    
+    suggestions.forEach((suggestion, index) => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.textContent = suggestion;
+        div.setAttribute('data-index', index);
+        
+        div.addEventListener('click', function() {
+            searchInput.value = suggestion;
+            suggestionsDropdown.classList.remove('show');
+            searchFeeder();
+        });
+        
+        div.addEventListener('mouseover', function() {
+            document.querySelectorAll('.suggestion-item').forEach(item => {
+                item.classList.remove('highlighted');
+            });
+            this.classList.add('highlighted');
+            currentFocus = index;
+        });
+        
+        suggestionsDropdown.appendChild(div);
+    });
+    
+    suggestionsDropdown.classList.add('show');
+}
+
+function updateHighlightedItem() {
+    const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
+    items.forEach(item => item.classList.remove('highlighted'));
+    if (currentFocus > -1 && items[currentFocus]) {
+        items[currentFocus].classList.add('highlighted');
+        items[currentFocus].scrollIntoView({ block: 'nearest' });
+    }
+}
+
+// Build ISS map with CUG numbers
+function buildISSMap() {
+    issMap = new Map();
+    
+    powerData.forEach(item => {
+        const iss = cleanString(item["ISS "]);
+        const feeder33KV = cleanString(item["NAME OF 33KV FEEDERS"]);
+        const feeder11KV = cleanString(item["ASSOCIATED 11KV FEEDERS"]);
+        const issCUG = item["ISS CUG"] || 'N/A';
+
+        if (iss && iss !== 'N/A') {
+            if (!issMap.has(iss)) {
+                issMap.set(iss, {
+                    linked33KV: feeder33KV,
+                    linked11KVFeeders: new Set(),
+                    cug: issCUG
+                });
+            }
+            if (feeder11KV && feeder11KV !== 'N/A') {
+                issMap.get(iss).linked11KVFeeders.add(feeder11KV);
+            }
+        }
+    });
+}
+
+
+// Display ISS details when clicked
+function displayISSDetails(issName) {
+    resultsContainer.innerHTML = '';
+    
+    const issData = issMap.get(issName);
+    
+    if (!issData) {
+        displayMessage(`No information found for ISS: "${issName}".`);
+        return;
+    }
+    
+    const linked33KV = issData.linked33KV;
+    const linked11KVFeeders = Array.from(issData.linked11KVFeeders);
+    const issCUG = issData.cug;
+    
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    
+    card.innerHTML = `
+        <h3 class="result-title">ISS: ${formatValue(issName)}</h3>
+        <p class="result-item"><strong>ISS CUG:</strong> ${formatValue(issCUG)}</p>
+        <p class="result-item">
+            <strong>Associated 33KV Feeder:</strong> 
+            <span class="feeder-33kv-button cursor-pointer" data-feeder-name="${formatValue(linked33KV)}">
+                ${formatValue(linked33KV)}
+            </span>
+        </p>
+        <p class="result-item"><strong>Outgoing 11KV Feeders:</strong> <hr></p>
+        <div class="flex flex-wrap gap-2 mt-2" id="iss-feeder-buttons"></div>
+    `;
+    
+    resultsContainer.appendChild(card);
+    
+    // Add buttons for each 11KV feeder
+    const feederButtonsContainer = card.querySelector('#iss-feeder-buttons');
+    if (linked11KVFeeders.length > 0) {
+        linked11KVFeeders.forEach(feeder => {
+            const button = document.createElement('span');
+            button.textContent = feeder;
+            button.className = 'feeder-11kv-button';
+            button.setAttribute('data-feeder-name', feeder);
+            feederButtonsContainer.appendChild(button);
+        });
+    } else {
+        feederButtonsContainer.textContent = 'N/A';
+        feederButtonsContainer.classList.add('text-gray-500');
+    }
+    
+    // Add back button
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Search';
+    backButton.className = 'back-button';
+    backButton.onclick = () => {
+        resultsContainer.innerHTML = '';
+        searchInput.value = '';
+        displayMessage('Search for feeder data to see results here.');
+    };
+    resultsContainer.appendChild(backButton);
+}
+
+function display11KVFeederDetails(feederName) {
+    resultsContainer.innerHTML = '';
+
+    const matchingItems = powerData.filter(item =>
+        cleanString(item["ASSOCIATED 11KV FEEDERS"]) === cleanString(feederName)
+    );
+
+    if (matchingItems.length === 0) {
+        displayMessage(`No detailed information found for 11KV feeder: "${feederName}".`);
+    } else {
+        matchingItems.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+
+            card.innerHTML = `
+                <h3 class="result-title">${formatValue(item["ASSOCIATED 11KV FEEDERS"])} 11KV FEEDER</h3>
+               <p class="result-item">
+    <strong>Name of 33KV Feeder:</strong> 
+    <span class="feeder-33kv-button cursor-pointer" 
+          style="text-transform: uppercase;" 
+          data-feeder-name="${formatValue(item['NAME OF 33KV FEEDERS'])}">
+        ${formatValue(item['NAME OF 33KV FEEDERS'])}
+    </span>
+</p>
+                <p class="result-item"><strong>ISS:</strong> 
+                    <span class="iss-button" data-iss-name="${formatValue(item["ISS "])}">
+                        ${formatValue(item["ISS "])}
+                    </span>
+                </p>
+                <p class="result-item"><strong>Transformer Limitation:</strong> ${formatValue(item["TRANSFORMER LIMITATION"])}</p>
+                <p class="result-item"><strong>Transformer load (11KV):</strong> ${formatValue(item["Transformer load"])}</p>
+                <p class="result-item"><strong>Peak Load (11KV):</strong> ${formatValue(item["PEAK LOAD"])}</p>
+                <p class="result-item"><strong>Average Load (11KV):</strong> ${formatValue(item["AVERAGE LOAD.1"])}</p>
+                <p class="result-item"><strong>Remarks:</strong> ${formatValue(item["REMARKS"])}</p>
+                <p class="result-item"><strong>State Located:</strong> ${formatValue(item["STATE LOCATED"])}</p>
+            `;
+            resultsContainer.appendChild(card);
+        });
+    }
+
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Search';
+    backButton.className = 'back-button';
+    backButton.onclick = () => {
+        resultsContainer.innerHTML = '';
+        searchInput.value = '';
+        displayMessage('Search for feeder data to see results here.');
+    };
+    resultsContainer.appendChild(backButton);
+}
+
+function displayTransmissionStationDetails(stationName) {
+    resultsContainer.innerHTML = '';
+    
+    // Find all unique 33kV feeders linked to this transmission station
+    const stationFeeders = new Set();
+    
+    powerData.forEach(item => {
+        const station = cleanString(item["TRANSMISSION SUBSTATION"]);
+        const feeder33KV = cleanString(item["NAME OF 33KV FEEDERS"]);
+        
+        if (station === cleanString(stationName) && feeder33KV && feeder33KV !== 'N/A') {
+            stationFeeders.add(feeder33KV);
+        }
+    });
+    
+    if (stationFeeders.size === 0) {
+        displayMessage(`No 33kV feeders found for transmission station: "${stationName}".`);
+        return;
+    }
+    
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    
+    card.innerHTML = `
+        <h3 class="result-title">Transmission Station: ${formatValue(stationName)}</h3>
+        <p class="result-item"><strong>33kV Feeders:</strong></p>
+        <div class="flex flex-wrap gap-2 mt-2" id="feeder-buttons-container"></div>
+    `;
+    
+    resultsContainer.appendChild(card);
+    
+    const buttonsContainer = card.querySelector('#feeder-buttons-container');
+    
+    // Add buttons for each 33kV feeder
+    stationFeeders.forEach(feeder33KV => {
+        const button = document.createElement('button');
+        button.textContent = feeder33KV;
+        button.className = 'feeder-33kv-button';
+        button.setAttribute('data-feeder-name', feeder33KV);
+        buttonsContainer.appendChild(button);
+    });
+    
+    // Add back button
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Search';
+    backButton.className = 'back-button mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
+    backButton.onclick = () => {
+        resultsContainer.innerHTML = '';
+        searchInput.value = '';
+        displayMessage('Search for feeder data to see results here.');
+    };
+    resultsContainer.appendChild(backButton);
+}
+
+function searchFeeder() {
+    const searchTerm = cleanString(searchInput.value);
+    resultsContainer.innerHTML = '';
+    suggestionsDropdown.classList.remove('show');
+
+    if (!searchTerm) {
+        displayMessage('Please enter a feeder name to search.');
+        return;
+    }
+
+    // Check if it's a transmission station search
+    const isTransmissionStation = powerData.some(item =>
+        cleanString(item["TRANSMISSION SUBSTATION"]) === searchTerm
+    );
+
+    if (isTransmissionStation) {
+        displayTransmissionStationDetails(searchTerm);
+        return;
+    }
+
+    const is11KVFeederSearch = powerData.some(item =>
+        cleanString(item["ASSOCIATED 11KV FEEDERS"]) === searchTerm
+    );
+
+    if (is11KVFeederSearch) {
+        display11KVFeederDetails(searchTerm);
+        return;
+    }
+
+    const grouped33KVFeeders = new Map();
+    const standaloneMatchingItems = [];
+
+    powerData.forEach(item => {
+        const feeder33KV = cleanString(item["NAME OF 33KV FEEDERS"]);
+        const feeder11KV = cleanString(item["ASSOCIATED 11KV FEEDERS"]);
+        const substation = cleanString(item["TRANSMISSION SUBSTATION"]);
+        const iss = cleanString(item["ISS "]);
+
+        const isMatch = feeder33KV.includes(searchTerm) ||
+                        feeder11KV.includes(searchTerm) ||
+                        substation.includes(searchTerm);
+
+        if (isMatch) {
+            if (feeder33KV && feeder33KV !== 'N/A') {
+                if (!grouped33KVFeeders.has(feeder33KV)) {
+                    grouped33KVFeeders.set(feeder33KV, {
+                        mainData: { ...item },
+                        associated11KVFeeders: new Set(),
+                        associatedISS: new Set()
+                    });
+                }
+                if (feeder11KV && feeder11KV !== 'N/A') {
+                    grouped33KVFeeders.get(feeder33KV).associated11KVFeeders.add(feeder11KV);
+                }
+                if (iss && iss !== 'N/A') {
+                    grouped33KVFeeders.get(feeder33KV).associatedISS.add(iss);
+                }
+            } else {
+                standaloneMatchingItems.push(item);
+            }
+        }
+    });
+
+    if (grouped33KVFeeders.size === 0 && standaloneMatchingItems.length === 0) {
+        displayMessage(`No results found for "${searchInput.value}".`);
+    } else {
+        grouped33KVFeeders.forEach((group, feeder33KV) => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+
+            card.innerHTML = `
+                <h3 class="result-title">33KV Feeder: ${formatValue(feeder33KV)}</h3>
+                <p class="result-item"><strong>Transmission Substation:</strong> 
+                    <span class="station-button cursor-pointer" data-station-name="${formatValue(group.mainData["TRANSMISSION SUBSTATION"])}">
+                        ${formatValue(group.mainData["TRANSMISSION SUBSTATION"])}
+                    </span>
+                </p>
+                <p class="result-item"><strong>Transmission Power TF (MVA):</strong> ${formatValue(group.mainData["TRANSMISSION POWER TF (MVA)"])}</p>
+                <p class="result-item"><strong>TF Capacity (MW):</strong> ${formatValue(group.mainData["TF CAPACITY(MW)"])}</p>
+                <p class="result-item"><strong>Transformer Load (MW):</strong> ${formatValue(group.mainData["TRANSFORMER LOAD (MW)"])}</p>
+                <p class="result-item"><strong>Max. Load:</strong> ${formatValue(group.mainData["MAX.  LOAD"])}</p>
+                <p class="result-item"><strong>Average Load:</strong> ${formatValue(group.mainData["AVERAGE LOAD"])}</p>
+                
+                <p class="result-item"><strong>Associated ISS:</strong><hr></p>
+                <div class="flex flex-wrap gap-2 mt-2" id="iss-buttons-${feeder33KV.replace(/\s+/g, '-')}"></div>
+                
+                <p class="result-item mt-4"><strong>Associated 11KV Feeders:</strong> <hr></p>
+                <div class="flex flex-wrap gap-2 mt-2" id="feeder-buttons-${feeder33KV.replace(/\s+/g, '-')}"></div>
+            `;
+
+            resultsContainer.appendChild(card);
+
+            // Add ISS buttons
+            const issButtonsContainer = card.querySelector(`#iss-buttons-${feeder33KV.replace(/\s+/g, '-')}`);
+            if (group.associatedISS.size > 0) {
+                group.associatedISS.forEach(iss => {
+                    const button = document.createElement('span');
+                    button.textContent = iss;
+                    button.className = 'iss-button';
+                    button.setAttribute('data-iss-name', iss);
+                    issButtonsContainer.appendChild(button);
+                });
+            } else {
+                issButtonsContainer.textContent = 'N/A';
+                issButtonsContainer.classList.add('text-gray-500');
+            }
+
+            // Add 11KV feeder buttons
+            const buttonsContainer = card.querySelector(`#feeder-buttons-${feeder33KV.replace(/\s+/g, '-')}`);
+            if (group.associated11KVFeeders.size > 0) {
+                group.associated11KVFeeders.forEach(feeder => {
+                    const button = document.createElement('span');
+                    button.textContent = feeder;
+                    button.className = 'feeder-11kv-button';
+                    button.setAttribute('data-feeder-name', feeder);
+                    buttonsContainer.appendChild(button);
+                });
+            } else {
+                buttonsContainer.textContent = 'N/A';
+                buttonsContainer.classList.add('text-gray-500');
+            }
+        });
+
+        standaloneMatchingItems.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <h3 class="result-title">Feeder Details</h3>
+                ${Object.entries(item).map(([key, value]) =>
+                    `<p class="result-item"><strong>${key}:</strong> ${formatValue(value)}</p>`
+                ).join('')}
+            `;
+            resultsContainer.appendChild(card);
+        });
+    }
+}
+
+// Event listeners
+searchButton.addEventListener('click', searchFeeder);
+
+searchInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        searchFeeder();
+    }
+});
+
+searchInput.addEventListener('input', function() {
+    showSuggestions();
+});
+
+document.addEventListener('click', function(e) {
+    if (e.target !== searchInput) {
+        suggestionsDropdown.classList.remove('show');
+    }
+});
+
+searchInput.addEventListener('keydown', function(e) {
+    const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
+    
+    if (items.length === 0) return;
+    
+    if (e.key === 'ArrowDown') {
+        currentFocus++;
+        if (currentFocus >= items.length) {
+            currentFocus = 0;
+        }
+        e.preventDefault();
+        updateHighlightedItem();
+    }
+    else if (e.key === 'ArrowUp') {
+        currentFocus--;
+        if (currentFocus < 0) {
+            currentFocus = items.length - 1;
+        }
+        e.preventDefault();
+        updateHighlightedItem();
+    }
+    else if (e.key === 'Enter' && currentFocus > -1) {
+        e.preventDefault();
+        items[currentFocus].click();
+    }
+});
+
+// Consolidated click event listener for all buttons
+resultsContainer.addEventListener('click', function(event) {
+    if (event.target.classList.contains('feeder-11kv-button')) {
+        const feederName = event.target.getAttribute('data-feeder-name');
+        if (feederName) {
+            display11KVFeederDetails(feederName);
+        }
+    }
+    
+    if (event.target.classList.contains('feeder-33kv-button')) {
+        const feederName = event.target.getAttribute('data-feeder-name');
+        if (feederName) {
+            searchInput.value = feederName;
+            searchFeeder();
+        }
+    }
+    
+    if (event.target.classList.contains('iss-button')) {
+        const issName = event.target.getAttribute('data-iss-name');
+        if (issName) {
+            displayISSDetails(issName);
+        }
+    }
+    
+    if (event.target.classList.contains('station-button')) {
+        const stationName = event.target.getAttribute('data-station-name');
+        if (stationName) {
+            displayTransmissionStationDetails(stationName);
+        }
+    }
+});
+
+// Initialize the ISS map when the script loads
+buildISSMap();
+
+// Add this CSS to your stylesheet or style tag
+/*
+.feeder-11kv-button,
+.feeder-33kv-button,
+.station-button,
+.iss-button {
+    @apply text-blue-600 underline cursor-pointer hover:text-blue-800;
+}
+
+.suggestion-item {
+    @apply p-2 hover:bg-gray-100 cursor-pointer;
+}
+
+.suggestion-item.highlighted {
+    @apply bg-blue-100;
+}
+
+.result-card {
+    @apply bg-white p-4 rounded-lg shadow mb-4;
+}
+
+.result-title {
+    @apply text-xl font-bold mb-2;
+}
+
+.result-item {
+    @apply mb-1;
+}
+
+.back-button {
+    @apply mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600;
+}
+*/
+
+    </script>
+</body>
+</html>
