@@ -42,6 +42,7 @@
     min-height: 70vh;
     max-width: 900px;
     margin-top: 50px;
+
 }		
        .search-input {
             border: 1px solid #cbd5e1;
@@ -50,6 +51,7 @@
             font-size: 1rem;
             width: 100%;
             transition: border-color 0.3s ease;
+		   
         }
 
         .search-input:focus {
@@ -83,6 +85,7 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease;
+			
         }
 
         .result-card:hover {
@@ -193,16 +196,16 @@
             transform: translateY(-2px);
         }
 		
-		footer {
+		.txt {
     text-align: center;
     font-family: sans-serif;
     color: #333;
-    width: 100%;
+/*    width: 100%;*/
     background-color: #f1f1f1;
     padding: 1rem;
     z-index: 1000;
-	position: relative;
-	bottom: 0;
+			margin-bottom: -200px;
+	
 }
         @media (max-width: 768px) {
             .container {
@@ -233,6 +236,7 @@
     </style>
 </head>
 <body>
+<div class="container1" style="width: 100%">
   <div class="container">
     <h1 style="background-color:#f5f5f5" class="mb-8 text-3xl font-bold text-gray-800 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
   <img src="PHED logo.png" alt="Logo" class="h-16 w-auto" />
@@ -261,13 +265,14 @@
  <div id="resultsContainer" style="text-transform: uppercase; ">
 <!--    <p class="text-center text-gray-500">Search for feeder data to see results here.</p>-->
 </div>
+</div>
 	  
-	  <footer>
+	  <div class="txt">
   Designed by 
   <a href="mailto:obot.akpan@phed.com.ng" style="color:#0066cc; text-decoration:none;">
     Obot Akpan
   </a>
-</footer>
+</div>
 	  
 </div>
 
