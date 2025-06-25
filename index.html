@@ -22,10 +22,10 @@
 			border-bottom: 1px solid gray
 		}
 
-        .container {
+    .container {
     background: 
-        linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
-        url("Background 1.jpg");
+    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+    url("Background 1.jpg");
     background-size: cover;
     background-position: center;
     border-radius: 12px;
@@ -35,10 +35,8 @@
     min-height: 70vh;
     max-width: 900px;
     margin-top: 50px;
-}
-		
-
-        .search-input {
+}		
+       .search-input {
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             padding: 12px 16px;
@@ -129,8 +127,9 @@
 		
 		}
 		.station-button{
-		 background-color: greenyellow;
-		  color: #fff;
+		 background-color:greenyellow;
+		  color: #000;
+			font-weight: 700
 		
 		}
 		
@@ -4222,7 +4221,8 @@ function display11KVFeederDetails(feederName) {
                 <p class="result-item"><strong>Transformer Limitation:</strong> ${formatValue(item["TRANSFORMER LIMITATION"])}</p>
                 <p class="result-item"><strong>Transformer load (11KV):</strong> ${formatValue(item["Transformer load"])}</p>
                 <p class="result-item"><strong>Peak Load (11KV):</strong> ${formatValue(item["PEAK LOAD"])}</p>
-                <p class="result-item"><strong>Average Load (11KV):</strong> ${formatValue(item["AVERAGE LOAD.1"])}</p>
+               <p class="result-item"><strong>Average Load (11KV):</strong> ${Number(item["AVERAGE LOAD.1"]).toFixed(2)}</p>
+
                 <p class="result-item"><strong>Remarks:</strong> ${formatValue(item["REMARKS"])}</p>
                 <p class="result-item"><strong>State Located:</strong> ${formatValue(item["STATE LOCATED"])}</p>
             `;
@@ -4383,7 +4383,9 @@ function searchFeeder() {
                 <p class="result-item"><strong>TF Capacity (MW):</strong> ${formatValue(group.mainData["TF CAPACITY(MW)"])}</p>
                 <p class="result-item"><strong>Transformer Load (MW):</strong> ${formatValue(group.mainData["TRANSFORMER LOAD (MW)"])}</p>
                 <p class="result-item"><strong>Max. Load:</strong> ${formatValue(group.mainData["MAX.  LOAD"])}</p>
-                <p class="result-item"><strong>Average Load:</strong> ${formatValue(group.mainData["AVERAGE LOAD"])}</p>
+                <p class="result-item"><strong>Average Load:</strong> ${formatValue(group.mainData["AVERAGE LOAD"]).toFixed(2)}</p>
+
+
                 
                 <p class="result-item"><strong>Associated ISS:</strong><hr></p>
                 <div class="flex flex-wrap gap-2 mt-2" id="iss-buttons-${feeder33KV.replace(/\s+/g, '-')}"></div>
