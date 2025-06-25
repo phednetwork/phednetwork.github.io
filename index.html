@@ -6,8 +6,10 @@
     <title>PHED NETWORK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+		
+	
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: #c6d3e3;
             display: flex;
             justify-content: center;
@@ -98,6 +100,7 @@
 			min-height: 60px;
 			align-content: center;
 			justify-content: center;
+			box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
         }
 
         .result-item {
@@ -189,7 +192,18 @@
             background-color: #4b5563;
             transform: translateY(-2px);
         }
-
+		
+		footer {
+    text-align: center;
+    font-family: sans-serif;
+    color: #333;
+    width: 100%;
+    background-color: #f1f1f1;
+    padding: 1rem;
+    z-index: 1000;
+	position: relative;
+	bottom: 0;
+}
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -244,9 +258,17 @@
        
     </div>
 
- <div id="resultsContainer" style="text-transform: uppercase;">
+ <div id="resultsContainer" style="text-transform: uppercase; ">
 <!--    <p class="text-center text-gray-500">Search for feeder data to see results here.</p>-->
 </div>
+	  
+	  <footer>
+  Designed by 
+  <a href="mailto:obot.akpan@phed.com.ng" style="color:#0066cc; text-decoration:none;">
+    Obot Akpan
+  </a>
+</footer>
+	  
 </div>
 
     <script>
@@ -4537,6 +4559,8 @@ resultsContainer.addEventListener('click', function(event) {
 buildISSMap();
 
     </script>
+	
+	
 </body>
 </html>
 
