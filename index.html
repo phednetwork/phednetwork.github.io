@@ -21,7 +21,7 @@ h3 {
 	border-bottom: 1px solid gray
 }
 hr {
-	border: 3px solid green;
+	border: 2px solid green;
 	margin-bottom: 5px
 }
 .container {
@@ -4130,7 +4130,7 @@ function displayISSDetails(issName) {
     card.className = 'result-card';
 
     card.innerHTML = `
-        <h3 class="result-title">ISS: ${formatValue(issName)}</h3>
+        <h3 class="result-title">${formatValue(issName)} ISS</h3>
         <p class="result-item"><strong>ISS CUG:</strong> ${formatValue(issCUG)}</p>
         <p class="result-item">
             <strong>Source 33KV Feeder:</strong> 
@@ -4264,7 +4264,7 @@ function displayTransmissionStationDetails(stationName) {
     card.className = 'result-card';
     
     card.innerHTML = `
-        <h3 class="result-title">Transmission Station: ${formatValue(stationName)}</h3>
+        <h3 class="result-title">${formatValue(stationName)} TS</h3>
         <p class="result-item"><strong>33kV Feeders:</strong></p>
         <div class="flex flex-wrap gap-2 mt-2" id="feeder-buttons-container"></div>
     `;
@@ -4365,13 +4365,13 @@ function searchFeeder() {
             card.className = 'result-card';
 
             card.innerHTML = `
-                <h3 class="result-title">33KV Feeder: ${formatValue(feeder33KV)}</h3>
-                <p class="result-item"><strong>TSS:</strong> 
+                <h3 class="result-title">${formatValue(feeder33KV)} 33KV Feeder</h3>
+                <p class="result-item"><strong>TS:</strong> 
                     <span class="station-button cursor-pointer" data-station-name="${formatValue(group.mainData["TRANSMISSION SUBSTATION"])}">
                         ${formatValue(group.mainData["TRANSMISSION SUBSTATION"])}
                     </span>
                 </p>
-                <p class="result-item"><strong>Tss Power TF (MVA):</strong> ${formatValue(group.mainData["TRANSMISSION POWER TF (MVA)"])}</p>
+                <p class="result-item"><strong>Ts Power TF (MVA):</strong> ${formatValue(group.mainData["TRANSMISSION POWER TF (MVA)"])}</p>
                 <p class="result-item"><strong>TF Capacity (MW):</strong> ${formatValue(group.mainData["TF CAPACITY(MW)"])}</p>
                 <p class="result-item"><strong>Transformer Load (MW):</strong> ${formatValue(group.mainData["TRANSFORMER LOAD (MW)"])}</p>
                 <p class="result-item"><strong>Max. Load:</strong> ${formatValue(group.mainData["MAX.  LOAD"])}</p>
