@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHED NETWORK</title>
+    <title>Power Feeder Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -2370,6 +2370,7 @@
         "TF CAPACITY(MW)": 32.0,
         "TRANSFORMER LOAD (MW)": 6.2,
         "NAME OF 33KV FEEDERS": "Buguma",
+
         "MAX.  LOAD": 3.3,
         "AVERAGE LOAD": 1.4776089106697565,
         "ISS ": NaN,
@@ -3937,6 +3938,7 @@
         "MAX.  LOAD": 3.7,
         "AVERAGE LOAD": 1.613335628067091,
         "ISS ": NaN,
+
         "TRANSFORMER LIMITATION": NaN,
         "Transformer load": NaN,
         "ASSOCIATED 11KV FEEDERS": NaN,
@@ -4102,24 +4104,40 @@ function buildISSMap() {
 }
 
 
-// Display ISS details when clicked
+// Global state history for view management
+const viewHistory = [];
+
+// Utility function to format values
+function formatValue(value) {
+    return value || 'N/A';
+}
+
+// Display message helper
+function displayMessage(msg) {
+    resultsContainer.innerHTML = `<p class="info-message">${msg}</p>`;
+}
+
+// Main display function for ISS details
 function displayISSDetails(issName) {
+    // Save current view before changing it
+    viewHistory.push(resultsContainer.innerHTML);
+
     resultsContainer.innerHTML = '';
-    
+
     const issData = issMap.get(issName);
-    
+
     if (!issData) {
         displayMessage(`No information found for ISS: "${issName}".`);
         return;
     }
-    
+
     const linked33KV = issData.linked33KV;
     const linked11KVFeeders = Array.from(issData.linked11KVFeeders);
     const issCUG = issData.cug;
-    
+
     const card = document.createElement('div');
     card.className = 'result-card';
-    
+
     card.innerHTML = `
         <h3 class="result-title">ISS: ${formatValue(issName)}</h3>
         <p class="result-item"><strong>ISS CUG:</strong> ${formatValue(issCUG)}</p>
@@ -4132,10 +4150,10 @@ function displayISSDetails(issName) {
         <p class="result-item"><strong>Outgoing 11KV Feeders:</strong> <hr></p>
         <div class="flex flex-wrap gap-2 mt-2" id="iss-feeder-buttons"></div>
     `;
-    
+
     resultsContainer.appendChild(card);
-    
-    // Add buttons for each 11KV feeder
+
+    // Add 11KV feeder buttons
     const feederButtonsContainer = card.querySelector('#iss-feeder-buttons');
     if (linked11KVFeeders.length > 0) {
         linked11KVFeeders.forEach(feeder => {
@@ -4149,20 +4167,26 @@ function displayISSDetails(issName) {
         feederButtonsContainer.textContent = 'N/A';
         feederButtonsContainer.classList.add('text-gray-500');
     }
-    
-    // Add back button
+
+    // Back button
     const backButton = document.createElement('button');
-    backButton.textContent = 'Back to Search';
+    backButton.textContent = 'Back';
     backButton.className = 'back-button';
     backButton.onclick = () => {
-        resultsContainer.innerHTML = '';
-        searchInput.value = '';
-        displayMessage('Search for feeder data to see results here.');
+        if (viewHistory.length > 0) {
+            resultsContainer.innerHTML = viewHistory.pop();
+        } else {
+            resultsContainer.innerHTML = '';
+            searchInput.value = '';
+            displayMessage('Search for feeder data to see results here.');
+        }
     };
     resultsContainer.appendChild(backButton);
 }
-
 function display11KVFeederDetails(feederName) {
+    // Save current view before replacing it
+    viewHistory.push(resultsContainer.innerHTML);
+
     resultsContainer.innerHTML = '';
 
     const matchingItems = powerData.filter(item =>
@@ -4178,19 +4202,23 @@ function display11KVFeederDetails(feederName) {
 
             card.innerHTML = `
                 <h3 class="result-title">${formatValue(item["ASSOCIATED 11KV FEEDERS"])} 11KV FEEDER</h3>
-               <p class="result-item">
-    <strong>Name of 33KV Feeder:</strong> 
-    <span class="feeder-33kv-button cursor-pointer" 
-          style="text-transform: uppercase;" 
-          data-feeder-name="${formatValue(item['NAME OF 33KV FEEDERS'])}">
-        ${formatValue(item['NAME OF 33KV FEEDERS'])}
-    </span>
-</p>
-                <p class="result-item"><strong>ISS:</strong> 
+
+                <p class="result-item">
+                    <strong>Name of 33KV Feeder:</strong> 
+                    <span class="feeder-33kv-button cursor-pointer" 
+                          style="text-transform: uppercase;" 
+                          data-feeder-name="${formatValue(item['NAME OF 33KV FEEDERS'])}">
+                        ${formatValue(item['NAME OF 33KV FEEDERS'])}
+                    </span>
+                </p>
+
+                <p class="result-item">
+                    <strong>ISS:</strong> 
                     <span class="iss-button" data-iss-name="${formatValue(item["ISS "])}">
                         ${formatValue(item["ISS "])}
                     </span>
                 </p>
+
                 <p class="result-item"><strong>Transformer Limitation:</strong> ${formatValue(item["TRANSFORMER LIMITATION"])}</p>
                 <p class="result-item"><strong>Transformer load (11KV):</strong> ${formatValue(item["Transformer load"])}</p>
                 <p class="result-item"><strong>Peak Load (11KV):</strong> ${formatValue(item["PEAK LOAD"])}</p>
@@ -4198,20 +4226,27 @@ function display11KVFeederDetails(feederName) {
                 <p class="result-item"><strong>Remarks:</strong> ${formatValue(item["REMARKS"])}</p>
                 <p class="result-item"><strong>State Located:</strong> ${formatValue(item["STATE LOCATED"])}</p>
             `;
+
             resultsContainer.appendChild(card);
         });
     }
 
+    // Back button to restore previous view
     const backButton = document.createElement('button');
-    backButton.textContent = 'Back to Search';
+    backButton.textContent = 'Back';
     backButton.className = 'back-button';
     backButton.onclick = () => {
-        resultsContainer.innerHTML = '';
-        searchInput.value = '';
-        displayMessage('Search for feeder data to see results here.');
+        if (viewHistory.length > 0) {
+            resultsContainer.innerHTML = viewHistory.pop();
+        } else {
+            resultsContainer.innerHTML = '';
+            searchInput.value = '';
+            displayMessage('Search for feeder data to see results here.');
+        }
     };
     resultsContainer.appendChild(backButton);
 }
+
 
 function displayTransmissionStationDetails(stationName) {
     resultsContainer.innerHTML = '';
@@ -4484,40 +4519,6 @@ resultsContainer.addEventListener('click', function(event) {
 
 // Initialize the ISS map when the script loads
 buildISSMap();
-
-// Add this CSS to your stylesheet or style tag
-/*
-.feeder-11kv-button,
-.feeder-33kv-button,
-.station-button,
-.iss-button {
-    @apply text-blue-600 underline cursor-pointer hover:text-blue-800;
-}
-
-.suggestion-item {
-    @apply p-2 hover:bg-gray-100 cursor-pointer;
-}
-
-.suggestion-item.highlighted {
-    @apply bg-blue-100;
-}
-
-.result-card {
-    @apply bg-white p-4 rounded-lg shadow mb-4;
-}
-
-.result-title {
-    @apply text-xl font-bold mb-2;
-}
-
-.result-item {
-    @apply mb-1;
-}
-
-.back-button {
-    @apply mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600;
-}
-*/
 
     </script>
 </body>
