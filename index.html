@@ -4284,7 +4284,7 @@ function displayTransmissionStationDetails(stationName) {
     
     // Add back button
     const backButton = document.createElement('button');
-    backButton.textContent = 'Back to Search';
+    backButton.textContent = 'Back';
     backButton.className = 'back-button mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
     backButton.onclick = () => {
         resultsContainer.innerHTML = '';
@@ -4303,6 +4303,13 @@ function searchFeeder() {
         displayMessage('Please enter a feeder name to search.');
         return;
     }
+	
+	// Check if it's an ISS search
+  const isISSSearch = powerData.some(item => cleanString(item["ISS"]) === searchTerm);
+  if (isISSSearch) {
+    displayISSDetails(searchTerm);
+    return;
+  }
 
     // Check if it's a transmission station search
     const isTransmissionStation = powerData.some(item =>
@@ -4417,6 +4424,7 @@ function searchFeeder() {
                 buttonsContainer.textContent = 'N/A';
                 buttonsContainer.classList.add('text-gray-500');
             }
+			
         });
 
         standaloneMatchingItems.forEach(item => {
