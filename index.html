@@ -6,275 +6,228 @@
     <title>PHED NETWORK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-		
-	
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #c6d3e3;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 20px;
-
-            box-sizing: border-box;
-        }
-		h3{
-			text-align: center;
-			border-bottom: 1px solid gray
-		}
-		hr{
-			border: 3px solid #fff;
-			margin-bottom: 5px
-			
-		}
-	
-    .container {
-    background: 
-    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
-    url("Background 1.jpg");
-    background-size: cover;
-    background-position: center;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    width: 100%;
-    min-height: 70vh;
-    max-width: 900px;
-    margin-top: 50px;
-
-}		
-       .search-input {
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 1rem;
-            width: 100%;
-            transition: border-color 0.3s ease;
-		   
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-        }
-
-        .search-button {
-            background-color: #3b82f6;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-        }
-
-        .search-button:hover {
-            background-color: #2563eb;
-            transform: translateY(-2px);
-        }
-
-        .result-card {
-/*            background-color: #f8fafc;*/
-            background-color: beige;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
-			
-        }
-
-        .result-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .result-title {
-            font-size: 1.25rem;
-            font-weight: 900;
-			background-color: aquamarine;
-/*            color: #1a202c;*/
-            color: purple;
-            margin-bottom: 20px;
-			border: 3px solid green;
-			min-height: 60px;
-			align-content: center;
-			justify-content: center;
-			box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-item {
-            font-size: 0.95rem;
-            color: #4a5568;
-            margin-bottom: 5px;
-        }
-
-        .result-item strong {
-            color: #2d3748;
-        }
-
-        .feeder-11kv-button,.feeder-33kv-button,.station-button,.iss-button {
-            display: inline-block;
-            background-color: #e0e7ff;
-            color: #3b82f6;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            border: 1px solid #fff;
-        }
-		.feeder-11kv-button{
-		 background-color: #FF0000;	
-		 color: #fff;
-		}
-			.feeder-33kv-button{
-		 background-color: #587246;
-		  color: #fff;
-		
-		}
-		.iss-button{
-		 background-color: cornflowerblue;
-		  color: #fff;
-		
-		}
-		.station-button{
-		 background-color:greenyellow;
-		  color: #000;
-			font-weight: 700
-		
-		}
-		
-		
-		.suggestions-dropdown {
-    display: none;
-    z-index: 1000;
+body {
+	font-family: 'Segoe UI', sans-serif;
+	background-color: #c6d3e3;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	min-height: 100vh;
+	padding: 20px;
+	box-sizing: border-box;
 }
-
+h3 {
+	text-align: center;
+	border-bottom: 1px solid gray
+}
+hr {
+	border: 3px solid #fff;
+	margin-bottom: 5px
+}
+.container {
+	background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url("Background 1.jpg");
+	background-size: cover;
+	background-position: center;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	padding: 30px;
+	width: 100%;
+	min-height: 70vh;
+	max-width: 900px;
+	margin-top: 50px;
+}
+.search-input {
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	padding: 12px 16px;
+	font-size: 1rem;
+	width: 100%;
+	transition: border-color 0.3s ease;
+}
+.search-input:focus {
+	outline: none;
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+.search-button {
+	background-color: #3b82f6;
+	color: white;
+	padding: 12px 24px;
+	border-radius: 8px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+	box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+.search-button:hover {
+	background-color: #2563eb;
+	transform: translateY(-2px);
+}
+.result-card {
+	/*            background-color: #f8fafc;*/
+	background-color: beige;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 20px;
+	margin-bottom: 20px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	transition: transform 0.2s ease;
+}
+.result-card:hover {
+	transform: translateY(-3px);
+}
+.result-title {
+	font-size: 1.25rem;
+	font-weight: 900;
+	background-color: aquamarine;
+	/*            color: #1a202c;*/
+	color: purple;
+	margin-bottom: 20px;
+	border: 3px solid green;
+	min-height: 60px;
+	align-content: center;
+	justify-content: center;
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+}
+.result-item {
+	font-size: 0.95rem;
+	color: #4a5568;
+	margin-bottom: 5px;
+}
+.result-item strong {
+	color: #2d3748;
+}
+.feeder-11kv-button, .feeder-33kv-button, .station-button, .iss-button {
+	display: inline-block;
+	background-color: #e0e7ff;
+	color: #3b82f6;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-weight: 500;
+	cursor: pointer;
+	margin-right: 8px;
+	margin-bottom: 8px;
+	transition: background-color 0.2s ease, color 0.2s ease;
+	border: 1px solid #fff;
+}
+.feeder-11kv-button {
+	background-color: #FF0000;
+	color: #fff;
+}
+.feeder-33kv-button {
+	background-color: #587246;
+	color: #fff;
+}
+.iss-button {
+	background-color: cornflowerblue;
+	color: #fff;
+}
+.station-button {
+	background-color: greenyellow;
+	color: #000;
+	font-weight: 700
+}
+.suggestions-dropdown {
+	display: none;
+	z-index: 1000;
+}
 .suggestions-dropdown.show {
-    display: block;
+	display: block;
 }
-
 .suggestion-item {
-    padding: 8px 12px;
-    cursor: pointer;
+	padding: 8px 12px;
+	cursor: pointer;
 }
-
 .suggestion-item:hover {
-    background-color: #f0f0f0;
+	background-color: #f0f0f0;
 }
-
 .suggestion-item.highlighted {
-    background-color: #e0e0e0;
+	background-color: #e0e0e0;
 }
-
-        .feeder-11kv-button:hover, .iss-button:hover, .feeder-33kv-button:hover,.station-button:hover{
-            background-color: #c7d2fe;
-            color: #1d4ed8;
-        }
-
-
-        .back-button {
-            background-color: #6b7280;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        .back-button:hover {
-            background-color: #4b5563;
-            transform: translateY(-2px);
-        }
-		
-		.txt {
-    text-align: center;
-    font-family: sans-serif;
-    color: #333;
-    padding: 1rem;
-    z-index: 1000;
+.feeder-11kv-button:hover, .iss-button:hover, .feeder-33kv-button:hover, .station-button:hover {
+	background-color: #c7d2fe;
+	color: #1d4ed8;
+}
+.back-button {
+	background-color: #6b7280;
+	color: white;
+	padding: 10px 20px;
+	border-radius: 8px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	margin-top: 20px;
+}
+.back-button:hover {
+	background-color: #4b5563;
+	transform: translateY(-2px);
+}
+.txt {
+	text-align: right;
+	font-family: sans-serif;
+	color: #333;
+	padding: 1rem;
+	z-index: 1000;
 	margin-top: -50px;
-	
+	margin-right: 20px;
 }
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                margin-top: 20px;
-            }
-            .search-input, .search-button {
-                padding: 10px 14px;
-                font-size: 0.9rem;
-            }
-            .result-title {
-                font-size: 1.1rem;
-            }
-            .result-item {
-                font-size: 0.85rem;
-            }
-	    .title-text{
-		    font-size:20px;
-		    margin-top:-20px;
-	    }
-        }
-		 @media (min-width: 1050px) {
-			 body{
-			padding-left: 20%;
-			padding-right: 20%;
-			 } 
-		}
-    </style>
+
+@media (max-width: 768px) {
+.container {
+	padding: 20px;
+	margin-top: 20px;
+}
+.search-input, .search-button {
+	padding: 10px 14px;
+	font-size: 0.9rem;
+}
+.result-title {
+	font-size: 1.1rem;
+}
+.result-item {
+	font-size: 0.85rem;
+}
+.title-text {
+	font-size: 20px;
+	margin-top: -20px;
+}
+}
+
+@media (min-width: 1050px) {
+body {
+	padding-left: 20%;
+	padding-right: 20%;
+}
+}
+</style>
 </head>
 <body>
 <div class="container1" style="width: 100%">
   <div class="container">
-    <h1 style="background-color:#f5f5f5" class="mb-8 text-3xl font-bold text-gray-800 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-  <img src="PHED logo.png" alt="Logo" class="h-16 w-auto" />
-  <span class="title-text text-[color:#7f78c9]">NETWORK TREE</span>
-</h1>
-
+    <h1 style="background-color:#f5f5f5" class="mb-8 text-3xl font-bold text-gray-800 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0"> <img src="PHED logo.png" alt="Logo" class="h-16 w-auto" /> <span class="title-text text-[color:#7f78c9]">NETWORK TREE</span> </h1>
     <div class="firstCont flex flex-col sm:flex-row gap-4 mb-8 relative">
-        <div class="relative flex-grow">
-            <div class="flex w-full gap-2">
-    <input
+      <div class="relative flex-grow">
+        <div class="flex w-full gap-2">
+          <input
         type="text"
         id="searchInput"
         placeholder="Enter 33KV or 11KV Feeder Name (e.g., Abuloma, JETTY)"
         class="search-input flex-grow px-4 py-2 border border-gray-300 rounded-md"
         autocomplete="off"
     />
-    <button id="searchButton" class="search-button px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-        Search
-    </button>
-</div>
-            <div id="suggestionsDropdown" class="suggestions-dropdown hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"></div>
+          <button id="searchButton" class="search-button px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"> Search </button>
         </div>
-       
+        <div id="suggestionsDropdown" class="suggestions-dropdown hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"></div>
+      </div>
     </div>
-
- <div id="resultsContainer" style="text-transform: uppercase; ">
-<!--    <p class="text-center text-gray-500">Search for feeder data to see results here.</p>-->
+    <div id="resultsContainer" style="text-transform: uppercase; "> 
+      <!--    <p class="text-center text-gray-500">Search for feeder data to see results here.</p>--> 
+    </div>
+  </div>
+  <div class="txt"> Designed by <a href="mailto:obot.akpan@phed.com.ng" style="color:#0066cc; text-decoration:none;"> Obot Akpan </a> </div>
 </div>
-</div>
-	  
-	  <div class="txt">
-  Designed by 
-  <a href="mailto:obot.akpan@phed.com.ng" style="color:#0066cc; text-decoration:none;">
-    Obot Akpan
-  </a>
-</div>
-	  
-</div>
-
-    <script>
+<script>
         // Power transmission and distribution data
         const powerData = [
     {
@@ -4562,8 +4515,6 @@ resultsContainer.addEventListener('click', function(event) {
 buildISSMap();
 
     </script>
-	
-	
 </body>
 </html>
 
