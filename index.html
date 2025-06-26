@@ -13,8 +13,9 @@ body {
 	justify-content: center;
 	align-items: flex-start;
 	min-height: 100vh;
-	padding: 20px;
+	padding: 5px 20px;
 	box-sizing: border-box;
+	margin: 0px;
 }
 h3 {
 	text-align: center;
@@ -32,7 +33,7 @@ hr {
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 	padding: 30px;
 	width: 100%;
-	min-height: 70vh;
+	min-height: 80vh;
 	max-width: 900px;
 	margin-top: 50px;
 }
@@ -1561,7 +1562,7 @@ body {
         "NAME OF 33KV FEEDER": "Komkom",
         "MAX.  LOAD": 24.512999999999998,
         "AVERAGE LOAD": 9.73693884405976,
-        "ISS": "KOM KOM NIPP   2 * 15 MVA ",
+        "ISS": "KOM KOM NIPP   2 * 15 MVA",
         "ISS POWER TF": "T1 15MVA",
         "Transformer load": 6.3,
         "ASSOCIATED 11KV FEEDERS": "AFAM ROAD",
@@ -1578,7 +1579,7 @@ body {
         "NAME OF 33KV FEEDER": "Komkom",
         "MAX.  LOAD": 24.512999999999998,
         "AVERAGE LOAD": 9.73693884405976,
-        "ISS": "KOM KOM NIPP   2 * 15 MVA ",
+        "ISS": "KOM KOM NIPP   2 * 15 MVA",
         "ISS POWER TF": "T1 15MVA",
         "Transformer load": 6.3,
         "ASSOCIATED 11KV FEEDERS": "RAILWAY",
@@ -1595,7 +1596,7 @@ body {
         "NAME OF 33KV FEEDER": "Komkom",
         "MAX.  LOAD": 24.512999999999998,
         "AVERAGE LOAD": 9.73693884405976,
-        "ISS": "KOM KOM NIPP   2 * 15 MVA ",
+        "ISS": "KOM KOM NIPP   2 * 15 MVA",
         "ISS POWER TF": "T2 15 MVA, INACTIVE )",
         "Transformer load": NaN,
         "ASSOCIATED 11KV FEEDERS": NaN,
@@ -4192,7 +4193,7 @@ function display11KVFeederDetails(feederName) {
             card.className = 'result-card';
 
             card.innerHTML = `
-                <h3 class="result-title">${formatValue(item["ASSOCIATED 11KV FEEDERS"])} 11KV FEEDER</h3>
+                <h3 class="result-title">${formatValue(item["ASSOCIATED 11KV FEEDERS"])} 11KV FDR</h3>
 
                 <p class="result-item">
                     <strong>Source 33KV Feeder:</strong> 
@@ -4372,7 +4373,7 @@ function searchFeeder() {
             card.className = 'result-card';
 
             card.innerHTML = `
-                <h3 class="result-title">${formatValue(feeder33KV)} 33KV Feeder</h3>
+                <h3 class="result-title">${formatValue(feeder33KV)} 33KV FDR</h3>
                 <p class="result-item"><strong>TS:</strong> 
                     <span class="station-button cursor-pointer" data-station-name="${formatValue(group.mainData["TRANSMISSION SUBSTATION"])}">
                         ${formatValue(group.mainData["TRANSMISSION SUBSTATION"])}
